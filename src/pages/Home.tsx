@@ -1,128 +1,89 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, FlaskConical, Search, Send, Sparkles } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getProtocolsForUser } from "../lib/storage";
+import { getAnimal } from "../lib/animals";
 import { ProtocolCard } from "../components/ProtocolCard";
+import { BlobBackground } from "../components/BlobBackground";
 
 export function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const protocols = useMemo(() => (user ? getProtocolsForUser(user.id) : []), [user]);
-
-  const submittedCount = protocols.filter((p) => p.submittedAt).length;
-  const thisWeekCount = protocols.filter((p) => {
-    const diffDays = (Date.now() - new Date(p.createdAt).getTime()) / 86_400_000;
-    return diffDays <= 7;
-  }).length;
+  const protocols = useMemo(
+    () => (user ? getProtocolsForUser(user.id) : []),
+    [user],
+  );
+  const animal = getAnimal(user?.avatar);
 
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <p className="text-white/80 text-sm font-medium drop-shadow">
-          {new Date().toLocaleDateString("de-DE", {
-            weekday: "long",
-            day: "2-digit",
-            month: "long",
-          })}
-        </p>
-        <h1 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight text-white drop-shadow-md">
-          Hallo {user?.name} 👋
-        </h1>
-        <p className="text-white/90 mt-1 drop-shadow">
-          Lass uns dein nächstes Experiment starten.
-        </p>
-      </div>
+    <div className="relative min-h-dvh pb-32">
+      <BlobBackground />
 
-      <div className="flex items-center gap-3">
-        <div className="flex-1 flex items-center gap-3 h-14 rounded-2xl bg-surface border border-border px-4">
-          <Search size={16} className="text-muted-2" />
-          <input
-            placeholder="Protokoll suchen…"
-            onFocus={() => navigate("/protokolle")}
-            className="bg-transparent flex-1 outline-none text-sm"
-            readOnly
-          />
+      <div className="relative px-6 pt-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl"
+              style={{ background: animal.bg }}
+            >
+              {animal.emoji}
+            </div>
+            <div>
+              <p className="text-muted text-xs">Willkommen zurück</p>
+              <p className="font-semibold">{user?.name}</p>
+            </div>
+          </div>
+          <button className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center">
+            <Search size={18} className="text-muted" />
+          </button>
         </div>
+
+        <h1 className="font-display text-3xl font-extrabold leading-tight mb-1">
+          Lass uns dein
+          <br />
+          nächstes <span className="text-primary">Experiment</span> starten.
+        </h1>
+
         <button
           onClick={() => navigate("/neu")}
-          className="h-14 px-5 rounded-2xl text-white font-semibold text-sm flex items-center gap-2 shrink-0"
-          style={{ background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))" }}
+          className="w-full mt-6 rounded-3xl p-5 flex items-center justify-between text-left"
+          style={{
+            background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
+          }}
         >
-          <Sparkles size={16} />
-          <span className="hidden sm:inline">Neues Protokoll</span>
+          <div>
+            <p className="text-white/80 text-sm mb-1">Neues Protokoll</p>
+            <p className="text-white font-display font-bold text-lg">
+              Schritt für Schritt starten
+            </p>
+          </div>
+          <Sparkles size={28} className="text-white" />
         </button>
-      </div>
 
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-bold text-lg text-white drop-shadow">
-            Deine Protokolle
-          </h2>
+        <div className="flex items-center justify-between mt-8 mb-4">
+          <h2 className="font-display font-bold text-lg">Deine letzten Protokolle</h2>
           <button
             onClick={() => navigate("/protokolle")}
-            className="text-sm text-white font-semibold underline underline-offset-2"
+            className="text-sm text-primary font-semibold"
           >
-            Alle ansehen
+            Alle
           </button>
         </div>
 
         {protocols.length === 0 ? (
-          <div className="rounded-3xl bg-surface border border-dashed border-white/40 p-8 text-center text-muted">
-            Du hast noch kein Protokoll erstellt.{" "}
-            <button onClick={() => navigate("/neu")} className="text-primary font-semibold">
-              Jetzt starten
-            </button>
+          <div className="rounded-3xl border border-dashed border-border p-6 text-center text-muted">
+            Du hast noch kein Protokoll erstellt. Tippe auf „Schritt für Schritt
+            starten“, um loszulegen!
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {protocols.slice(0, 6).map((p, i) => (
+          <div className="grid grid-cols-2 gap-3">
+            {protocols.slice(0, 4).map((p, i) => (
               <ProtocolCard key={p.id} protocol={p} index={i} />
             ))}
           </div>
         )}
-      </section>
-
-      {protocols.length > 0 && (
-        <section className="grid grid-cols-1 md:grid-cols-[1fr_260px] gap-4">
-          <div className="rounded-3xl bg-surface border border-border p-5">
-            <h2 className="font-display font-bold mb-4">Letzte Aktivität</h2>
-            <div className="flex flex-col divide-y divide-border">
-              {protocols.slice(0, 5).map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => navigate(`/protokolle/${p.id}`)}
-                  className="flex items-center gap-3 py-3 text-left first:pt-0 last:pb-0"
-                >
-                  <div className="w-9 h-9 rounded-xl bg-primary-soft flex items-center justify-center shrink-0">
-                    <FlaskConical size={15} className="text-primary" />
-                  </div>
-                  <span className="flex-1 text-sm font-medium line-clamp-1">{p.question}</span>
-                  <span className="text-xs text-muted-2 shrink-0">
-                    {new Date(p.createdAt).toLocaleDateString("de-DE", {
-                      day: "2-digit",
-                      month: "short",
-                    })}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div className="rounded-3xl bg-surface border border-border p-5 flex flex-col items-center gap-1 text-center">
-              <Check size={18} className="text-primary mb-1" />
-              <span className="font-display font-bold text-2xl">{thisWeekCount}</span>
-              <span className="text-muted text-xs">diese Woche erstellt</span>
-            </div>
-            <div className="rounded-3xl bg-surface border border-border p-5 flex flex-col items-center gap-1 text-center">
-              <Send size={18} className="text-accent mb-1" />
-              <span className="font-display font-bold text-2xl">{submittedCount}</span>
-              <span className="text-muted text-xs">eingereicht</span>
-            </div>
-          </div>
-        </section>
-      )}
+      </div>
     </div>
   );
 }

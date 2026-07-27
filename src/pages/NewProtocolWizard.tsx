@@ -107,9 +107,9 @@ export function NewProtocolWizard() {
 
   if (isEditing && !existing) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-        <p className="text-white drop-shadow">Dieses Protokoll wurde nicht gefunden.</p>
-        <button onClick={() => navigate("/protokolle")} className="text-white font-semibold underline">
+      <div className="min-h-dvh flex flex-col items-center justify-center gap-4 px-6 text-center">
+        <p className="text-muted">Dieses Protokoll wurde nicht gefunden.</p>
+        <button onClick={() => navigate("/protokolle")} className="text-primary font-semibold">
           Zurück zur Übersicht
         </button>
       </div>
@@ -181,7 +181,7 @@ export function NewProtocolWizard() {
 
   if (step > TOTAL_STEPS) {
     return (
-      <div className="max-w-2xl mx-auto w-full bg-surface border border-border rounded-3xl p-6 lg:p-8 flex flex-col min-h-[600px]">
+      <div className="min-h-dvh flex flex-col px-6 pt-6 pb-8">
         <WizardHeader
           step={TOTAL_STEPS}
           total={TOTAL_STEPS}
@@ -232,10 +232,7 @@ export function NewProtocolWizard() {
   }
 
   return (
-    <form
-      onSubmit={goNext}
-      className="max-w-2xl mx-auto w-full bg-surface border border-border rounded-3xl p-6 lg:p-8 flex flex-col min-h-[600px]"
-    >
+    <form onSubmit={goNext} className="min-h-dvh flex flex-col px-6 pt-6 pb-8">
       <WizardHeader
         step={step}
         total={TOTAL_STEPS}

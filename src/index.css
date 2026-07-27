@@ -4,23 +4,23 @@
   --font-display: "Baloo 2", "Plus Jakarta Sans", sans-serif;
   --font-sans: "Plus Jakarta Sans", sans-serif;
 
-  --color-bg: #f3ede0;
-  --color-bg-soft: #eef1e0;
-  --color-surface: rgba(255, 255, 255, 0.8);
-  --color-surface-2: rgba(255, 255, 255, 0.55);
-  --color-border: rgba(255, 255, 255, 0.55);
+  --color-bg: #0e1712;
+  --color-bg-soft: #172319;
+  --color-surface: #1e2f22;
+  --color-surface-2: #27402d;
+  --color-border: #35543c;
 
-  --color-primary: #34845a;
-  --color-primary-dark: #1f5c3d;
-  --color-primary-soft: #dcecdf;
-  --color-accent: #ff9d42;
-  --color-accent-dark: #f27a1f;
-  --color-sun: #ffc94d;
-  --color-danger: #e5584d;
+  --color-primary: #4ade80;
+  --color-primary-dark: #16a34a;
+  --color-primary-soft: #1c3327;
+  --color-accent: #a3e635;
+  --color-accent-dark: #65a30d;
+  --color-sun: #bef264;
+  --color-danger: #f87171;
 
-  --color-ink: #26301f;
-  --color-muted: #5c6354;
-  --color-muted-2: #7c8574;
+  --color-ink: #eef7f0;
+  --color-muted: #a3c2ac;
+  --color-muted-2: #7a9884;
 }
 
 html,
@@ -46,16 +46,35 @@ body {
   font-family: var(--font-display);
 }
 
-.bg-surface {
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-.tablet-shell {
-  max-width: 64rem;
+.app-shell {
+  max-width: 28rem;
   margin-inline: auto;
   min-height: 100dvh;
   position: relative;
+  overflow-x: hidden;
+  background: var(--color-bg);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) scale(1.05);
+  }
+}
+
+.blob-float {
+  animation: float-slow 9s ease-in-out infinite;
 }
 
 .no-scrollbar::-webkit-scrollbar {

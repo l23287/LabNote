@@ -7,19 +7,20 @@ import { ProtocolCard } from "../components/ProtocolCard";
 export function ProtocolList() {
   const { user } = useAuth();
   const [query, setQuery] = useState("");
-  const protocols = useMemo(() => (user ? getProtocolsForUser(user.id) : []), [user]);
+  const protocols = useMemo(
+    () => (user ? getProtocolsForUser(user.id) : []),
+    [user],
+  );
 
   const filtered = protocols.filter((p) =>
     p.question.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
-    <div className="flex flex-col gap-6 pb-8">
-      <h1 className="font-display text-2xl lg:text-3xl font-extrabold text-white drop-shadow-md">
-        Meine Protokolle
-      </h1>
+    <div className="min-h-dvh px-6 pt-8 pb-32">
+      <h1 className="font-display text-2xl font-extrabold mb-5">Meine Protokolle</h1>
 
-      <div className="flex items-center gap-3 h-12 rounded-2xl bg-surface border border-border px-4 max-w-md">
+      <div className="flex items-center gap-3 mb-6 h-12 rounded-2xl bg-surface border border-border px-4">
         <Search size={16} className="text-muted-2" />
         <input
           value={query}
@@ -30,11 +31,11 @@ export function ProtocolList() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-3xl bg-surface border border-dashed border-white/40 p-8 text-center text-muted">
+        <div className="rounded-3xl border border-dashed border-border p-6 text-center text-muted">
           Keine Protokolle gefunden.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {filtered.map((p, i) => (
             <ProtocolCard key={p.id} protocol={p} index={i} />
           ))}

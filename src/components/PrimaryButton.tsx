@@ -26,7 +26,7 @@ export function PrimaryButton({
       ? "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))"
       : "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))";
   const shadow =
-    variant === "accent" ? "0 10px 25px rgba(255,157,66,0.35)" : "0 10px 25px rgba(52,132,90,0.3)";
+    variant === "accent" ? "0 10px 25px rgba(163,230,53,0.3)" : "0 10px 25px rgba(74,222,128,0.25)";
 
   return (
     <button

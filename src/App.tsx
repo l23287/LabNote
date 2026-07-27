@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { AppShell } from "./components/AppShell";
+import { BottomNav } from "./components/BottomNav";
 import { Onboarding } from "./pages/Onboarding";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
@@ -20,6 +20,15 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AppLayout({ children, nav = true }: { children: React.ReactNode; nav?: boolean }) {
+  return (
+    <div className="app-shell flex flex-col">
+      <div className="flex-1">{children}</div>
+      {nav && <BottomNav />}
+    </div>
+  );
+}
+
 function AppRoutes() {
   const { user } = useAuth();
 
@@ -36,9 +45,9 @@ function AppRoutes() {
         path="/home"
         element={
           <RequireAuth>
-            <AppShell>
+            <AppLayout>
               <Home />
-            </AppShell>
+            </AppLayout>
           </RequireAuth>
         }
       />
@@ -46,9 +55,9 @@ function AppRoutes() {
         path="/neu"
         element={
           <RequireAuth>
-            <AppShell>
+            <AppLayout nav={false}>
               <NewProtocolWizard />
-            </AppShell>
+            </AppLayout>
           </RequireAuth>
         }
       />
@@ -56,9 +65,9 @@ function AppRoutes() {
         path="/protokolle"
         element={
           <RequireAuth>
-            <AppShell>
+            <AppLayout>
               <ProtocolList />
-            </AppShell>
+            </AppLayout>
           </RequireAuth>
         }
       />
@@ -66,9 +75,9 @@ function AppRoutes() {
         path="/protokolle/:id"
         element={
           <RequireAuth>
-            <AppShell>
+            <AppLayout nav={false}>
               <ProtocolDetail />
-            </AppShell>
+            </AppLayout>
           </RequireAuth>
         }
       />
@@ -76,9 +85,9 @@ function AppRoutes() {
         path="/protokolle/:id/bearbeiten"
         element={
           <RequireAuth>
-            <AppShell>
+            <AppLayout nav={false}>
               <NewProtocolWizard />
-            </AppShell>
+            </AppLayout>
           </RequireAuth>
         }
       />
@@ -86,9 +95,9 @@ function AppRoutes() {
         path="/kalender"
         element={
           <RequireAuth>
-            <AppShell>
+            <AppLayout>
               <CalendarPage />
-            </AppShell>
+            </AppLayout>
           </RequireAuth>
         }
       />
@@ -96,9 +105,9 @@ function AppRoutes() {
         path="/profil"
         element={
           <RequireAuth>
-            <AppShell>
+            <AppLayout>
               <Profile />
-            </AppShell>
+            </AppLayout>
           </RequireAuth>
         }
       />

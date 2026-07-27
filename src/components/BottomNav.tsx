@@ -2,19 +2,16 @@ import { NavLink } from "react-router-dom";
 import { CalendarDays, FlaskConical, House, Plus, UserRound } from "lucide-react";
 
 const navItemBase =
-  "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors";
+  "flex flex-col items-center justify-center gap-1 flex-1 h-full text-xs transition-colors";
 
 export function BottomNav() {
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-30 flex justify-center px-4 pb-6 pt-2 pointer-events-none">
-      <div
-        className="pointer-events-auto flex items-center gap-1 h-16 px-3 rounded-full backdrop-blur-xl border border-white/10 shadow-[0_15px_40px_rgba(0,0,0,0.35)]"
-        style={{ background: "rgba(20, 26, 22, 0.65)" }}
-      >
+    <nav className="sticky bottom-0 inset-x-0 z-30 px-4 pb-4 pt-2">
+      <div className="mx-auto flex items-center h-16 rounded-[28px] bg-surface/95 backdrop-blur border border-border shadow-[0_10px_30px_rgba(38,48,31,0.15)]">
         <NavLink
           to="/home"
           className={({ isActive }) =>
-            `${navItemBase} w-14 ${isActive ? "text-sun" : "text-white/60"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <House size={20} strokeWidth={2.2} />
@@ -22,26 +19,28 @@ export function BottomNav() {
         <NavLink
           to="/protokolle"
           className={({ isActive }) =>
-            `${navItemBase} w-14 ${isActive ? "text-sun" : "text-white/60"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <FlaskConical size={20} strokeWidth={2.2} />
         </NavLink>
 
-        <NavLink
-          to="/neu"
-          className="w-14 h-14 mx-1 rounded-full flex items-center justify-center shrink-0"
-          style={{
-            background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))",
-          }}
-        >
-          <Plus size={24} className="text-white" strokeWidth={2.5} />
-        </NavLink>
+        <div className="flex-1 flex justify-center">
+          <NavLink
+            to="/neu"
+            className="w-14 h-14 -mt-8 rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(163,230,53,0.4)]"
+            style={{
+              background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))",
+            }}
+          >
+            <Plus size={26} className="text-white" strokeWidth={2.5} />
+          </NavLink>
+        </div>
 
         <NavLink
           to="/kalender"
           className={({ isActive }) =>
-            `${navItemBase} w-14 ${isActive ? "text-sun" : "text-white/60"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <CalendarDays size={20} strokeWidth={2.2} />
@@ -49,7 +48,7 @@ export function BottomNav() {
         <NavLink
           to="/profil"
           className={({ isActive }) =>
-            `${navItemBase} w-14 ${isActive ? "text-sun" : "text-white/60"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <UserRound size={20} strokeWidth={2.2} />
