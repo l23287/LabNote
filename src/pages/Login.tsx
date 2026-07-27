@@ -23,10 +23,15 @@ export function Login() {
 
   return (
     <AuthLayout>
-      <h1 className="font-display text-3xl font-extrabold mb-2">Willkommen zurück!</h1>
-      <p className="text-muted mb-8">Melde dich an, um deine Protokolle zu sehen.</p>
+      <h1 className="font-display text-3xl font-extrabold mb-2 text-white drop-shadow-md">
+        Willkommen zurück!
+      </h1>
+      <p className="text-white/90 mb-6 drop-shadow">Melde dich an, um deine Protokolle zu sehen.</p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 bg-surface border border-border rounded-3xl p-6"
+      >
         <label className="flex flex-col gap-2">
           <span className="text-sm text-muted font-medium">E-Mail</span>
           <input
@@ -35,7 +40,7 @@ export function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="du@schule.de"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
+            className="h-14 rounded-2xl bg-white border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 
@@ -47,7 +52,7 @@ export function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
+            className="h-14 rounded-2xl bg-white border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 

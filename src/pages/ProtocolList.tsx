@@ -15,7 +15,9 @@ export function ProtocolList() {
 
   return (
     <div className="flex flex-col gap-6 pb-8">
-      <h1 className="font-display text-2xl lg:text-3xl font-extrabold">Meine Protokolle</h1>
+      <h1 className="font-display text-2xl lg:text-3xl font-extrabold text-white drop-shadow-md">
+        Meine Protokolle
+      </h1>
 
       <div className="flex items-center gap-3 h-12 rounded-2xl bg-surface border border-border px-4 max-w-md">
         <Search size={16} className="text-muted-2" />
@@ -28,7 +30,7 @@ export function ProtocolList() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-border p-8 text-center text-muted">
+        <div className="rounded-3xl bg-surface border border-dashed border-white/40 p-8 text-center text-muted">
           Keine Protokolle gefunden.
         </div>
       ) : (

@@ -68,8 +68,10 @@ export function CalendarPage() {
   return (
     <div className="flex flex-col gap-6 pb-8">
       <div>
-        <h1 className="font-display text-2xl lg:text-3xl font-extrabold mb-1">Kalender</h1>
-        <p className="text-muted text-sm">{lastProtocolLabel}</p>
+        <h1 className="font-display text-2xl lg:text-3xl font-extrabold mb-1 text-white drop-shadow-md">
+          Kalender
+        </h1>
+        <p className="text-white/90 text-sm drop-shadow">{lastProtocolLabel}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
@@ -147,7 +149,7 @@ export function CalendarPage() {
       </div>
 
       <div>
-        <h2 className="font-display font-bold mb-4">
+        <h2 className="font-display font-bold mb-4 text-white drop-shadow">
           {sameDay(selected, today) ? "Heute" : selected.toLocaleDateString("de-DE", {
             day: "2-digit",
             month: "long",
@@ -155,7 +157,9 @@ export function CalendarPage() {
         </h2>
 
         {selectedDayProtocols.length === 0 ? (
-          <p className="text-muted text-sm">An diesem Tag wurde kein Protokoll erstellt.</p>
+          <p className="text-white/90 text-sm drop-shadow">
+            An diesem Tag wurde kein Protokoll erstellt.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {selectedDayProtocols.map((p, i) => (

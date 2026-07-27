@@ -32,7 +32,9 @@ export function Profile() {
 
   return (
     <div className="flex flex-col gap-6 pb-8 max-w-4xl">
-      <h1 className="font-display text-2xl lg:text-3xl font-extrabold">Profil</h1>
+      <h1 className="font-display text-2xl lg:text-3xl font-extrabold text-white drop-shadow-md">
+        Profil
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 items-start">
         <div className="rounded-3xl bg-surface border border-border p-6 flex flex-col items-center text-center gap-4">

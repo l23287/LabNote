@@ -28,12 +28,17 @@ export function Register() {
 
   return (
     <AuthLayout>
-      <h1 className="font-display text-3xl font-extrabold mb-2">Leg los!</h1>
-      <p className="text-muted mb-8">
+      <h1 className="font-display text-3xl font-extrabold mb-2 text-white drop-shadow-md">
+        Leg los!
+      </h1>
+      <p className="text-white/90 mb-6 drop-shadow">
         Erstelle deinen Account und starte dein erstes Protokoll.
       </p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 bg-surface border border-border rounded-3xl p-6"
+      >
         <label className="flex flex-col gap-2">
           <span className="text-sm text-muted font-medium">Dein Name</span>
           <input
@@ -41,7 +46,7 @@ export function Register() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="z.B. Mia"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
+            className="h-14 rounded-2xl bg-white border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 
@@ -53,7 +58,7 @@ export function Register() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="du@schule.de"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
+            className="h-14 rounded-2xl bg-white border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 
@@ -65,7 +70,7 @@ export function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
+            className="h-14 rounded-2xl bg-white border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 

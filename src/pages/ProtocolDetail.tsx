@@ -48,8 +48,8 @@ export function ProtocolDetail() {
   if (!protocol) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-        <p className="text-muted">Dieses Protokoll wurde nicht gefunden.</p>
-        <button onClick={() => navigate("/protokolle")} className="text-primary font-semibold">
+        <p className="text-white drop-shadow">Dieses Protokoll wurde nicht gefunden.</p>
+        <button onClick={() => navigate("/protokolle")} className="text-white font-semibold underline">
           Zurück zur Übersicht
         </button>
       </div>
@@ -99,7 +99,7 @@ export function ProtocolDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
         <div className="flex flex-col gap-4 min-w-0">
           <div>
-            <span className="text-xs text-muted-2">
+            <span className="text-xs text-white/80 drop-shadow">
               {new Date(protocol.createdAt).toLocaleDateString("de-DE", {
                 weekday: "long",
                 day: "2-digit",
@@ -107,7 +107,7 @@ export function ProtocolDetail() {
                 year: "numeric",
               })}
             </span>
-            <h1 className="font-display text-2xl lg:text-3xl font-extrabold leading-snug mt-1">
+            <h1 className="font-display text-2xl lg:text-3xl font-extrabold leading-snug mt-1 text-white drop-shadow-md">
               {protocol.question}
             </h1>
           </div>
@@ -174,7 +174,7 @@ export function ProtocolDetail() {
             {submitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
             {protocol.submittedAt ? "Erneut einreichen" : "Als PDF einreichen"}
           </button>
-          {feedback && <p className="text-sm text-muted text-center">{feedback}</p>}
+          {feedback && <p className="text-sm text-white/90 drop-shadow text-center">{feedback}</p>}
 
           <button
             onClick={() => navigate(`/protokolle/${protocol.id}/bearbeiten`)}

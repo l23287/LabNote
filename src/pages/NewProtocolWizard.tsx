@@ -108,8 +108,8 @@ export function NewProtocolWizard() {
   if (isEditing && !existing) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-        <p className="text-muted">Dieses Protokoll wurde nicht gefunden.</p>
-        <button onClick={() => navigate("/protokolle")} className="text-primary font-semibold">
+        <p className="text-white drop-shadow">Dieses Protokoll wurde nicht gefunden.</p>
+        <button onClick={() => navigate("/protokolle")} className="text-white font-semibold underline">
           Zurück zur Übersicht
         </button>
       </div>

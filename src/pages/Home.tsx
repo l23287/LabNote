@@ -17,9 +17,25 @@ export function Home() {
   }).length;
 
   return (
-    <div className="flex flex-col gap-8 pb-8">
+    <div className="flex flex-col gap-8">
+      <div>
+        <p className="text-white/80 text-sm font-medium drop-shadow">
+          {new Date().toLocaleDateString("de-DE", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+          })}
+        </p>
+        <h1 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight text-white drop-shadow-md">
+          Hallo {user?.name} 👋
+        </h1>
+        <p className="text-white/90 mt-1 drop-shadow">
+          Lass uns dein nächstes Experiment starten.
+        </p>
+      </div>
+
       <div className="flex items-center gap-3">
-        <div className="flex-1 flex items-center gap-3 h-12 rounded-2xl bg-surface border border-border px-4">
+        <div className="flex-1 flex items-center gap-3 h-14 rounded-2xl bg-surface border border-border px-4">
           <Search size={16} className="text-muted-2" />
           <input
             placeholder="Protokoll suchen…"
@@ -30,37 +46,29 @@ export function Home() {
         </div>
         <button
           onClick={() => navigate("/neu")}
-          className="h-12 px-5 rounded-2xl text-white font-semibold text-sm hidden sm:flex items-center gap-2 shrink-0"
-          style={{ background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))" }}
+          className="h-14 px-5 rounded-2xl text-white font-semibold text-sm flex items-center gap-2 shrink-0"
+          style={{ background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))" }}
         >
           <Sparkles size={16} />
-          Neues Protokoll
+          <span className="hidden sm:inline">Neues Protokoll</span>
         </button>
-      </div>
-
-      <div>
-        <h1 className="font-display text-2xl lg:text-3xl font-extrabold leading-tight">
-          Hallo {user?.name} 👋
-        </h1>
-        <p className="text-muted mt-1">
-          Lass uns dein nächstes <span className="text-primary font-semibold">Experiment</span>{" "}
-          starten.
-        </p>
       </div>
 
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-bold text-lg">Deine Protokolle</h2>
+          <h2 className="font-display font-bold text-lg text-white drop-shadow">
+            Deine Protokolle
+          </h2>
           <button
             onClick={() => navigate("/protokolle")}
-            className="text-sm text-primary font-semibold"
+            className="text-sm text-white font-semibold underline underline-offset-2"
           >
             Alle ansehen
           </button>
         </div>
 
         {protocols.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border p-8 text-center text-muted">
+          <div className="rounded-3xl bg-surface border border-dashed border-white/40 p-8 text-center text-muted">
             Du hast noch kein Protokoll erstellt.{" "}
             <button onClick={() => navigate("/neu")} className="text-primary font-semibold">
               Jetzt starten
