@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, FlaskConical } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { AuthLayout } from "../components/AuthLayout";
 import { PrimaryButton } from "../components/PrimaryButton";
 
 export function Login() {
@@ -22,22 +22,11 @@ export function Login() {
   }
 
   return (
-    <div className="relative min-h-dvh flex flex-col px-6 pt-6">
-      <button
-        onClick={() => navigate(-1)}
-        className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center mb-8"
-      >
-        <ChevronLeft size={20} />
-      </button>
-
-      <div className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center mb-6">
-        <FlaskConical size={22} className="text-primary" />
-      </div>
-
+    <AuthLayout>
       <h1 className="font-display text-3xl font-extrabold mb-2">Willkommen zurück!</h1>
       <p className="text-muted mb-8">Melde dich an, um deine Protokolle zu sehen.</p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-2">
           <span className="text-sm text-muted font-medium">E-Mail</span>
           <input
@@ -64,17 +53,17 @@ export function Login() {
 
         {error && <p className="text-danger text-sm">{error}</p>}
 
-        <div className="flex-1" />
+        <PrimaryButton type="submit" className="mt-2">
+          Anmelden
+        </PrimaryButton>
 
-        <PrimaryButton type="submit">Anmelden</PrimaryButton>
-
-        <p className="text-center text-muted text-sm pb-6">
+        <p className="text-center text-muted text-sm">
           Noch keinen Account?{" "}
           <Link to="/registrieren" className="text-primary font-semibold">
             Jetzt registrieren
           </Link>
         </p>
       </form>
-    </div>
+    </AuthLayout>
   );
 }

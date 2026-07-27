@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, FlaskConical } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { AuthLayout } from "../components/AuthLayout";
 import { PrimaryButton } from "../components/PrimaryButton";
 
 export function Register() {
@@ -27,24 +27,13 @@ export function Register() {
   }
 
   return (
-    <div className="relative min-h-dvh flex flex-col px-6 pt-6">
-      <button
-        onClick={() => navigate(-1)}
-        className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center mb-8"
-      >
-        <ChevronLeft size={20} />
-      </button>
-
-      <div className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center mb-6">
-        <FlaskConical size={22} className="text-primary" />
-      </div>
-
+    <AuthLayout>
       <h1 className="font-display text-3xl font-extrabold mb-2">Leg los!</h1>
       <p className="text-muted mb-8">
         Erstelle deinen Account und starte dein erstes Protokoll.
       </p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-2">
           <span className="text-sm text-muted font-medium">Dein Name</span>
           <input
@@ -82,17 +71,17 @@ export function Register() {
 
         {error && <p className="text-danger text-sm">{error}</p>}
 
-        <div className="flex-1" />
+        <PrimaryButton type="submit" className="mt-2">
+          Account erstellen
+        </PrimaryButton>
 
-        <PrimaryButton type="submit">Account erstellen</PrimaryButton>
-
-        <p className="text-center text-muted text-sm pb-6">
+        <p className="text-center text-muted text-sm">
           Schon registriert?{" "}
           <Link to="/anmelden" className="text-primary font-semibold">
             Anmelden
           </Link>
         </p>
       </form>
-    </div>
+    </AuthLayout>
   );
 }

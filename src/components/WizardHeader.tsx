@@ -12,11 +12,11 @@ export function WizardHeader({ step, total, onBack, title }: WizardHeaderProps) 
   const navigate = useNavigate();
 
   return (
-    <div className="px-6 pt-6">
+    <div>
       <div className="flex items-center justify-between mb-5">
         <button
           onClick={onBack ?? (() => navigate(-1))}
-          className="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-ink"
+          className="w-10 h-10 rounded-full bg-bg-soft border border-border flex items-center justify-center text-ink"
           aria-label="Zurück"
         >
           <ChevronLeft size={20} />

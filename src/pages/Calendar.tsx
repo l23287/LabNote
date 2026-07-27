@@ -66,10 +66,13 @@ export function CalendarPage() {
   const selectedDayProtocols = protocols.filter((p) => sameDay(new Date(p.createdAt), selected));
 
   return (
-    <div className="min-h-dvh px-6 pt-8 pb-32">
-      <h1 className="font-display text-2xl font-extrabold mb-1">Kalender</h1>
-      <p className="text-muted text-sm mb-6">{lastProtocolLabel}</p>
+    <div className="flex flex-col gap-6 pb-8">
+      <div>
+        <h1 className="font-display text-2xl lg:text-3xl font-extrabold mb-1">Kalender</h1>
+        <p className="text-muted text-sm">{lastProtocolLabel}</p>
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
       <div className="rounded-3xl bg-surface border border-border p-5">
         <div className="flex items-center justify-between mb-5">
           <button
@@ -143,7 +146,7 @@ export function CalendarPage() {
         </div>
       </div>
 
-      <div className="mt-8">
+      <div>
         <h2 className="font-display font-bold mb-4">
           {sameDay(selected, today) ? "Heute" : selected.toLocaleDateString("de-DE", {
             day: "2-digit",
@@ -154,12 +157,13 @@ export function CalendarPage() {
         {selectedDayProtocols.length === 0 ? (
           <p className="text-muted text-sm">An diesem Tag wurde kein Protokoll erstellt.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {selectedDayProtocols.map((p, i) => (
               <ProtocolCard key={p.id} protocol={p} index={i} />
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );
