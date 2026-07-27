@@ -5,6 +5,7 @@ export interface User {
   password: string;
   avatar: string;
   teacherEmail?: string;
+  schoolClass?: string;
   createdAt: string;
 }
 

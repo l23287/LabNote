@@ -26,7 +26,12 @@ function loadImageSize(dataUrl: string): Promise<{ width: number; height: number
   });
 }
 
-async function renderProtocolPdf(doc: jsPDF, protocol: Protocol, studentName: string) {
+async function renderProtocolPdf(
+  doc: jsPDF,
+  protocol: Protocol,
+  studentName: string,
+  schoolClass?: string,
+) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const maxWidth = pageWidth - MARGIN_X * 2;
   let y = 64;
@@ -108,7 +113,10 @@ async function renderProtocolPdf(doc: jsPDF, protocol: Protocol, studentName: st
     month: "long",
     year: "numeric",
   });
-  doc.text(`${studentName} · ${dateLabel}`, MARGIN_X, y);
+  const subtitle = [studentName, schoolClass ? `Klasse ${schoolClass}` : null, dateLabel]
+    .filter(Boolean)
+    .join(" · ");
+  doc.text(subtitle, MARGIN_X, y);
   y += 28;
 
   section("Fragestellung", [protocol.question]);
@@ -130,16 +138,22 @@ async function renderProtocolPdf(doc: jsPDF, protocol: Protocol, studentName: st
   await images(protocol.images.result);
 }
 
+async function buildPdf(protocol: Protocol, studentName: string, schoolClass?: string) {
+  const { default: JsPDF } = await import("jspdf");
+  const doc = new JsPDF({ unit: "pt", format: "a4" });
+  await renderProtocolPdf(doc, protocol, studentName, schoolClass);
+  const fileName = `Protokoll-${slugify(protocol.question)}.pdf`;
+  return { doc, fileName };
+}
+
 export type SubmitResult = "shared" | "downloaded" | "cancelled";
 
 export async function submitProtocolAsPdf(
   protocol: Protocol,
   studentName: string,
+  schoolClass?: string,
 ): Promise<SubmitResult> {
-  const { default: JsPDF } = await import("jspdf");
-  const doc = new JsPDF({ unit: "pt", format: "a4" });
-  await renderProtocolPdf(doc, protocol, studentName);
-  const fileName = `Protokoll-${slugify(protocol.question)}.pdf`;
+  const { doc, fileName } = await buildPdf(protocol, studentName, schoolClass);
 
   if (typeof navigator.share === "function" && typeof navigator.canShare === "function") {
     const blob = doc.output("blob");
@@ -163,4 +177,14 @@ export async function submitProtocolAsPdf(
 
   doc.save(fileName);
   return "downloaded";
+}
+
+export async function openProtocolPdf(
+  protocol: Protocol,
+  studentName: string,
+  schoolClass?: string,
+): Promise<void> {
+  const { doc } = await buildPdf(protocol, studentName, schoolClass);
+  const url = doc.output("bloburl");
+  window.open(url, "_blank");
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ChevronLeft,
+  FileText,
   FlaskConical,
   Lightbulb,
   ListChecks,
@@ -12,7 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { deleteProtocol, getProtocol, upsertProtocol } from "../lib/storage";
-import { submitProtocolAsPdf } from "../lib/pdf";
+import { openProtocolPdf, submitProtocolAsPdf } from "../lib/pdf";
 import { useAuth } from "../context/AuthContext";
 
 function Section({
@@ -61,6 +62,7 @@ export function ProtocolDetail() {
   const { user } = useAuth();
   const [protocol, setProtocol] = useState(() => (id ? getProtocol(id) : undefined));
   const [submitting, setSubmitting] = useState(false);
+  const [opening, setOpening] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   if (!protocol) {
@@ -86,7 +88,7 @@ export function ProtocolDetail() {
     setSubmitting(true);
     setFeedback(null);
     try {
-      const result = await submitProtocolAsPdf(protocol, user.name);
+      const result = await submitProtocolAsPdf(protocol, user.name, user.schoolClass);
       if (result === "cancelled") {
         return;
       }
@@ -102,6 +104,19 @@ export function ProtocolDetail() {
       setFeedback("Das PDF konnte nicht erstellt werden.");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleOpenPdf() {
+    if (!protocol || !user) return;
+    setOpening(true);
+    setFeedback(null);
+    try {
+      await openProtocolPdf(protocol, user.name, user.schoolClass);
+    } catch {
+      setFeedback("Das PDF konnte nicht geöffnet werden.");
+    } finally {
+      setOpening(false);
     }
   }
 
@@ -200,8 +215,8 @@ export function ProtocolDetail() {
         </Section>
       </div>
 
-      <div className="mt-6">
-        {feedback && <p className="text-sm text-muted text-center mb-3">{feedback}</p>}
+      <div className="mt-6 flex flex-col gap-3">
+        {feedback && <p className="text-sm text-muted text-center">{feedback}</p>}
         <button
           onClick={handleSubmit}
           disabled={submitting}
@@ -211,12 +226,17 @@ export function ProtocolDetail() {
             boxShadow: "0 10px 25px rgba(163,230,53,0.3)",
           }}
         >
-          {submitting ? (
-            <Loader2 size={18} className="animate-spin" />
-          ) : (
-            <Send size={18} />
-          )}
+          {submitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
           {protocol.submittedAt ? "Erneut als PDF einreichen" : "Als PDF einreichen"}
+        </button>
+
+        <button
+          onClick={handleOpenPdf}
+          disabled={opening}
+          className="w-full h-12 rounded-2xl bg-surface border border-border font-semibold text-sm disabled:opacity-60 transition flex items-center justify-center gap-2"
+        >
+          {opening ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
+          PDF öffnen
         </button>
       </div>
     </div>

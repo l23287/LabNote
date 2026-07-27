@@ -13,7 +13,9 @@ export function Profile() {
     [user],
   );
   const [teacherEmail, setTeacherEmail] = useState(user?.teacherEmail ?? "");
-  const [saved, setSaved] = useState(false);
+  const [teacherEmailSaved, setTeacherEmailSaved] = useState(false);
+  const [schoolClass, setSchoolClass] = useState(user?.schoolClass ?? "");
+  const [schoolClassSaved, setSchoolClassSaved] = useState(false);
 
   if (!user) return null;
 
@@ -26,8 +28,14 @@ export function Profile() {
 
   function handleTeacherEmailSave() {
     updateUser({ teacherEmail: teacherEmail.trim() });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
+    setTeacherEmailSaved(true);
+    setTimeout(() => setTeacherEmailSaved(false), 1500);
+  }
+
+  function handleSchoolClassSave() {
+    updateUser({ schoolClass: schoolClass.trim() });
+    setSchoolClassSaved(true);
+    setTimeout(() => setSchoolClassSaved(false), 1500);
   }
 
   return (
@@ -43,6 +51,11 @@ export function Profile() {
         </div>
         <p className="font-display font-bold text-xl">{user.name}</p>
         <p className="text-muted text-sm">{user.email}</p>
+        {user.schoolClass && (
+          <span className="mt-2 text-xs font-semibold text-primary bg-primary-soft px-3 py-1 rounded-full">
+            Klasse {user.schoolClass}
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-8">
@@ -96,6 +109,27 @@ export function Profile() {
       </div>
 
       <div className="mb-8">
+        <h2 className="font-display font-bold mb-1">Deine Klasse</h2>
+        <p className="text-muted text-sm mb-4">
+          Wird auf deinem Protokoll und beim Einreichen angezeigt.
+        </p>
+        <div className="flex gap-2">
+          <input
+            value={schoolClass}
+            onChange={(e) => setSchoolClass(e.target.value)}
+            placeholder="z.B. 7b"
+            className="flex-1 h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
+          />
+          <button
+            onClick={handleSchoolClassSave}
+            className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-primary text-white font-semibold"
+          >
+            {schoolClassSaved ? <Check size={20} /> : "OK"}
+          </button>
+        </div>
+      </div>
+
+      <div className="mb-8">
         <h2 className="font-display font-bold mb-1">E-Mail deiner Lehrkraft</h2>
         <p className="text-muted text-sm mb-4">
           Wird beim Einreichen eines Protokolls als Empfänger vorgeschlagen.
@@ -112,7 +146,7 @@ export function Profile() {
             onClick={handleTeacherEmailSave}
             className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-primary text-white font-semibold"
           >
-            {saved ? <Check size={20} /> : "OK"}
+            {teacherEmailSaved ? <Check size={20} /> : "OK"}
           </button>
         </div>
       </div>
