@@ -37,6 +37,24 @@ function Section({
   );
 }
 
+function ImageGallery({ images }: { images: string[] }) {
+  if (images.length === 0) return null;
+  return (
+    <div className="flex gap-2 mt-3 flex-wrap">
+      {images.map((src, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => window.open(src, "_blank")}
+          className="w-16 h-16 rounded-xl overflow-hidden shrink-0"
+        >
+          <img src={src} alt="" className="w-full h-full object-cover" />
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function ProtocolDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -125,6 +143,7 @@ export function ProtocolDetail() {
       <h1 className="font-display text-2xl font-extrabold leading-snug mt-1 mb-4">
         {protocol.question}
       </h1>
+      <ImageGallery images={protocol.images.question} />
 
       {protocol.submittedAt && (
         <div className="flex items-center gap-2 rounded-2xl bg-primary-soft text-primary px-4 py-3 mb-4 text-sm font-medium">
@@ -146,6 +165,7 @@ export function ProtocolDetail() {
               </li>
             ))}
           </ul>
+          <ImageGallery images={protocol.images.materials} />
         </Section>
 
         <Section icon={<FlaskConical size={16} />} title="Durchführung">
@@ -159,20 +179,24 @@ export function ProtocolDetail() {
               </li>
             ))}
           </ol>
+          <ImageGallery images={protocol.images.procedure} />
         </Section>
 
-        {protocol.hypothesis && (
+        {(protocol.hypothesis || protocol.images.hypothesis.length > 0) && (
           <Section icon={<Lightbulb size={16} />} title="Vermutung">
-            <p className="text-sm leading-relaxed">{protocol.hypothesis}</p>
+            {protocol.hypothesis && <p className="text-sm leading-relaxed">{protocol.hypothesis}</p>}
+            <ImageGallery images={protocol.images.hypothesis} />
           </Section>
         )}
 
         <Section icon={<Notebook size={16} />} title="Beobachtung">
           <p className="text-sm leading-relaxed">{protocol.observation}</p>
+          <ImageGallery images={protocol.images.observation} />
         </Section>
 
         <Section icon={<Notebook size={16} />} title="Ergebnis">
           <p className="text-sm leading-relaxed">{protocol.result}</p>
+          <ImageGallery images={protocol.images.result} />
         </Section>
       </div>
 

@@ -4,13 +4,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Plus, X, Check, Pencil, Beaker } from "lucide-react";
 import { WizardHeader } from "../components/WizardHeader";
 import { SortableStepList } from "../components/SortableStepList";
+import { ImagePicker } from "../components/ImagePicker";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { useAuth } from "../context/AuthContext";
 import { getProtocol, upsertProtocol } from "../lib/storage";
-import type { Protocol, ProtocolDraft } from "../types";
+import type { Protocol, ProtocolDraft, StepKey } from "../types";
 import { emptyDraft } from "../types";
 
 const TOTAL_STEPS = 6;
+
+const STEP_KEYS: StepKey[] = [
+  "question",
+  "materials",
+  "procedure",
+  "hypothesis",
+  "observation",
+  "result",
+];
 
 function toDraft(protocol: Protocol): ProtocolDraft {
   return {
@@ -20,6 +30,7 @@ function toDraft(protocol: Protocol): ProtocolDraft {
     hypothesis: protocol.hypothesis,
     observation: protocol.observation,
     result: protocol.result,
+    images: protocol.images,
   };
 }
 
@@ -120,6 +131,10 @@ export function NewProtocolWizard() {
     setDraft((d) => ({ ...d, [key]: value }));
   }
 
+  function updateImages(key: StepKey, images: string[]) {
+    setDraft((d) => ({ ...d, images: { ...d.images, [key]: images } }));
+  }
+
   function goBack() {
     if (step === 1) {
       navigate(-1);
@@ -192,6 +207,7 @@ export function NewProtocolWizard() {
         <div className="flex-1 flex flex-col gap-4 mt-6 overflow-y-auto no-scrollbar">
           <SummaryBlock title="Fragestellung" onEdit={() => setStep(1)}>
             <p className="text-sm">{draft.question}</p>
+            <ImageThumbs images={draft.images.question} />
           </SummaryBlock>
           <SummaryBlock title="Materialien" onEdit={() => setStep(2)}>
             <ul className="text-sm list-disc list-inside space-y-1">
@@ -199,6 +215,7 @@ export function NewProtocolWizard() {
                 <li key={i}>{m}</li>
               ))}
             </ul>
+            <ImageThumbs images={draft.images.materials} />
           </SummaryBlock>
           <SummaryBlock title="Durchführung" onEdit={() => setStep(3)}>
             <ol className="text-sm list-decimal list-inside space-y-1">
@@ -206,17 +223,21 @@ export function NewProtocolWizard() {
                 <li key={i}>{s}</li>
               ))}
             </ol>
+            <ImageThumbs images={draft.images.procedure} />
           </SummaryBlock>
-          {draft.hypothesis && (
+          {(draft.hypothesis || draft.images.hypothesis.length > 0) && (
             <SummaryBlock title="Vermutung" onEdit={() => setStep(4)}>
-              <p className="text-sm">{draft.hypothesis}</p>
+              {draft.hypothesis && <p className="text-sm">{draft.hypothesis}</p>}
+              <ImageThumbs images={draft.images.hypothesis} />
             </SummaryBlock>
           )}
           <SummaryBlock title="Beobachtung" onEdit={() => setStep(5)}>
             <p className="text-sm">{draft.observation}</p>
+            <ImageThumbs images={draft.images.observation} />
           </SummaryBlock>
           <SummaryBlock title="Ergebnis" onEdit={() => setStep(6)}>
             <p className="text-sm">{draft.result}</p>
+            <ImageThumbs images={draft.images.result} />
           </SummaryBlock>
         </div>
 
@@ -242,7 +263,7 @@ export function NewProtocolWizard() {
 
       <p className="px-0 text-muted text-sm mt-3 mb-5">{STEP_META[step - 1].hint}</p>
 
-      <div className="flex-1">
+      <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4">
         {step === 1 && (
           <textarea
             autoFocus
@@ -298,6 +319,16 @@ export function NewProtocolWizard() {
             className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-primary resize-none"
           />
         )}
+
+        <div>
+          <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
+            Fotos (optional)
+          </p>
+          <ImagePicker
+            images={draft.images[STEP_KEYS[step - 1]]}
+            onChange={(images) => updateImages(STEP_KEYS[step - 1], images)}
+          />
+        </div>
       </div>
 
       <div className="pt-4 flex flex-col gap-2">
@@ -368,6 +399,22 @@ function SummaryBlock({
         </button>
       </div>
       {children}
+    </div>
+  );
+}
+
+function ImageThumbs({ images }: { images: string[] }) {
+  if (images.length === 0) return null;
+  return (
+    <div className="flex gap-2 mt-3">
+      {images.map((src, i) => (
+        <img
+          key={i}
+          src={src}
+          alt=""
+          className="w-14 h-14 rounded-xl object-cover shrink-0"
+        />
+      ))}
     </div>
   );
 }

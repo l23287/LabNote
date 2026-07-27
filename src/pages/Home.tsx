@@ -34,7 +34,11 @@ export function Home() {
               <p className="font-semibold">{user?.name}</p>
             </div>
           </div>
-          <button className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center">
+          <button
+            onClick={() => navigate("/protokolle")}
+            className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center"
+            aria-label="Protokolle durchsuchen"
+          >
             <Search size={18} className="text-muted" />
           </button>
         </div>

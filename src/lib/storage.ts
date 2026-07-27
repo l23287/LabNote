@@ -1,8 +1,13 @@
 import type { Protocol, User } from "../types";
+import { emptyStepImages } from "../types";
 
 const USERS_KEY = "labnote_users";
 const SESSION_KEY = "labnote_session";
 const PROTOCOLS_KEY = "labnote_protocols";
+
+function normalizeProtocol(protocol: Protocol): Protocol {
+  return { ...protocol, images: protocol.images ?? emptyStepImages };
+}
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -45,7 +50,7 @@ export function setSessionUserId(id: string | null) {
 }
 
 export function getProtocols(): Protocol[] {
-  return read<Protocol[]>(PROTOCOLS_KEY, []);
+  return read<Protocol[]>(PROTOCOLS_KEY, []).map(normalizeProtocol);
 }
 
 export function saveProtocols(protocols: Protocol[]) {

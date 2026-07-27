@@ -8,6 +8,25 @@ export interface User {
   createdAt: string;
 }
 
+export type StepKey =
+  | "question"
+  | "materials"
+  | "procedure"
+  | "hypothesis"
+  | "observation"
+  | "result";
+
+export type StepImages = Record<StepKey, string[]>;
+
+export const emptyStepImages: StepImages = {
+  question: [],
+  materials: [],
+  procedure: [],
+  hypothesis: [],
+  observation: [],
+  result: [],
+};
+
 export interface Protocol {
   id: string;
   userId: string;
@@ -17,6 +36,7 @@ export interface Protocol {
   hypothesis: string;
   observation: string;
   result: string;
+  images: StepImages;
   createdAt: string;
   updatedAt: string;
   submittedAt?: string;
@@ -34,4 +54,5 @@ export const emptyDraft: ProtocolDraft = {
   hypothesis: "",
   observation: "",
   result: "",
+  images: emptyStepImages,
 };

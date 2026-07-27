@@ -3,6 +3,8 @@ import type { Protocol } from "../types";
 
 const MARGIN_X = 48;
 const PAGE_BOTTOM = 780;
+const IMG_BOX = 100;
+const IMG_GAP = 10;
 
 function slugify(text: string): string {
   const slug = text
@@ -15,7 +17,16 @@ function slugify(text: string): string {
   return slug || "experiment";
 }
 
-function renderProtocolPdf(doc: jsPDF, protocol: Protocol, studentName: string) {
+function loadImageSize(dataUrl: string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    img.onerror = () => reject(new Error("Bild konnte nicht geladen werden."));
+    img.src = dataUrl;
+  });
+}
+
+async function renderProtocolPdf(doc: jsPDF, protocol: Protocol, studentName: string) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const maxWidth = pageWidth - MARGIN_X * 2;
   let y = 64;
@@ -48,7 +59,39 @@ function renderProtocolPdf(doc: jsPDF, protocol: Protocol, studentName: string) 
         y += 16;
       }
     }
-    y += 14;
+    y += 6;
+  }
+
+  function sectionTitle(title: string) {
+    ensureSpace(24);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.setTextColor(30, 60, 45);
+    doc.text(title, MARGIN_X, y);
+    y += 20;
+  }
+
+  async function images(imgs: string[]) {
+    if (imgs.length === 0) return;
+    ensureSpace(IMG_BOX);
+    let x = MARGIN_X;
+
+    for (const src of imgs) {
+      if (x + IMG_BOX > MARGIN_X + maxWidth) {
+        x = MARGIN_X;
+        y += IMG_BOX + IMG_GAP;
+        ensureSpace(IMG_BOX);
+      }
+      try {
+        const { width, height } = await loadImageSize(src);
+        const scale = Math.min(IMG_BOX / width, IMG_BOX / height);
+        doc.addImage(src, "JPEG", x, y, width * scale, height * scale);
+      } catch {
+        // skip images that fail to load
+      }
+      x += IMG_BOX + IMG_GAP;
+    }
+    y += IMG_BOX + 14;
   }
 
   doc.setFont("helvetica", "bold");
@@ -69,11 +112,22 @@ function renderProtocolPdf(doc: jsPDF, protocol: Protocol, studentName: string) 
   y += 28;
 
   section("Fragestellung", [protocol.question]);
+  await images(protocol.images.question);
   section("Materialien", protocol.materials);
+  await images(protocol.images.materials);
   section("Durchführung", protocol.procedure, true);
-  if (protocol.hypothesis) section("Vermutung", [protocol.hypothesis]);
+  await images(protocol.images.procedure);
+  if (protocol.hypothesis) {
+    section("Vermutung", [protocol.hypothesis]);
+    await images(protocol.images.hypothesis);
+  } else if (protocol.images.hypothesis.length > 0) {
+    sectionTitle("Vermutung");
+    await images(protocol.images.hypothesis);
+  }
   section("Beobachtung", [protocol.observation]);
+  await images(protocol.images.observation);
   section("Ergebnis", [protocol.result]);
+  await images(protocol.images.result);
 }
 
 export type SubmitResult = "shared" | "downloaded" | "cancelled";
@@ -84,7 +138,7 @@ export async function submitProtocolAsPdf(
 ): Promise<SubmitResult> {
   const { default: JsPDF } = await import("jspdf");
   const doc = new JsPDF({ unit: "pt", format: "a4" });
-  renderProtocolPdf(doc, protocol, studentName);
+  await renderProtocolPdf(doc, protocol, studentName);
   const fileName = `Protokoll-${slugify(protocol.question)}.pdf`;
 
   if (typeof navigator.share === "function" && typeof navigator.canShare === "function") {
