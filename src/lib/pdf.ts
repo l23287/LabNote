@@ -2,8 +2,6 @@ import type jsPDF from "jspdf";
 import type { Protocol } from "../types";
 
 const MARGIN_X = 50;
-const TOP_BAR_HEIGHT = 6;
-const HEADER_BOTTOM = 118;
 const FOOTER_ZONE = 50;
 const IMG_BOX = 100;
 const IMG_GAP = 10;
@@ -14,6 +12,10 @@ const BODY_TEXT: [number, number, number] = [40, 40, 40];
 const MUTED_TEXT: [number, number, number] = [130, 130, 130];
 const RULE_GRAY: [number, number, number] = [214, 214, 214];
 const IMAGE_BORDER: [number, number, number] = [214, 214, 214];
+
+const HEADER_BG: [number, number, number] = [21, 74, 53];
+const HEADER_EYEBROW: [number, number, number] = [163, 214, 182];
+const HEADER_META: [number, number, number] = [200, 225, 210];
 
 function slugify(text: string): string {
   const slug = text
@@ -45,7 +47,58 @@ async function renderProtocolPdf(
   const pageHeight = doc.internal.pageSize.getHeight();
   const maxWidth = pageWidth - MARGIN_X * 2;
   const pageBottom = pageHeight - FOOTER_ZONE;
-  let y = HEADER_BOTTOM;
+
+  // --- Header: green banner with the research question as the title ---
+  const HEADER_TOP = 32;
+  const EYEBROW_GAP = 20;
+  const TITLE_LINE_H = 24;
+  const TITLE_META_GAP = 16;
+  const HEADER_BOTTOM_PAD = 28;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(19);
+  const titleLines: string[] = doc.splitTextToSize(protocol.question || "Ohne Titel", maxWidth);
+
+  const headerHeight =
+    HEADER_TOP +
+    EYEBROW_GAP +
+    titleLines.length * TITLE_LINE_H +
+    TITLE_META_GAP +
+    HEADER_BOTTOM_PAD;
+
+  doc.setFillColor(...HEADER_BG);
+  doc.rect(0, 0, pageWidth, headerHeight, "F");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(...HEADER_EYEBROW);
+  doc.text("EXPERIMENT-PROTOKOLL", MARGIN_X, HEADER_TOP);
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(19);
+  doc.setTextColor(255, 255, 255);
+  let titleY = HEADER_TOP + EYEBROW_GAP;
+  for (const line of titleLines) {
+    doc.text(line, MARGIN_X, titleY);
+    titleY += TITLE_LINE_H;
+  }
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(...HEADER_META);
+  const dateLabel = new Date(protocol.createdAt).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  const metaParts = [
+    `Name: ${studentName}`,
+    schoolClass ? `Klasse: ${schoolClass}` : null,
+    `Datum: ${dateLabel}`,
+  ].filter(Boolean);
+  doc.text(metaParts.join("   |   "), MARGIN_X, titleY - TITLE_LINE_H + TITLE_META_GAP);
+
+  let y = headerHeight + 34;
 
   function ensureSpace(lineHeight: number) {
     if (y + lineHeight > pageBottom) {
@@ -152,37 +205,9 @@ async function renderProtocolPdf(
     y += IMG_BOX + 16;
   }
 
-  // Header
-  doc.setFillColor(...ACCENT);
-  doc.rect(0, 0, pageWidth, TOP_BAR_HEIGHT, "F");
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(19);
-  doc.setTextColor(...HEADING_TEXT);
-  doc.text("Experiment-Protokoll", MARGIN_X, 50);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(...MUTED_TEXT);
-  const dateLabel = new Date(protocol.createdAt).toLocaleDateString("de-DE", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-  const metaParts = [
-    `Name: ${studentName}`,
-    schoolClass ? `Klasse: ${schoolClass}` : null,
-    `Datum: ${dateLabel}`,
-  ].filter(Boolean);
-  doc.text(metaParts.join("   |   "), MARGIN_X, 70);
-
-  doc.setDrawColor(...RULE_GRAY);
-  doc.setLineWidth(1);
-  doc.line(MARGIN_X, 88, pageWidth - MARGIN_X, 88);
-
-  sectionHeading("Fragestellung");
-  paragraph(protocol.question);
-  await images(protocol.images.question);
+  if (protocol.images.question.length > 0) {
+    await images(protocol.images.question);
+  }
 
   sectionHeading("Materialien");
   bulletList(protocol.materials);
