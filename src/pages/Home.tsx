@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, Sparkles } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getProtocolsForUser } from "../lib/storage";
+import { getAnimal } from "../lib/animals";
 import { ProtocolCard } from "../components/ProtocolCard";
 import { BlobBackground } from "../components/BlobBackground";
 
@@ -13,6 +14,7 @@ export function Home() {
     () => (user ? getProtocolsForUser(user.id) : []),
     [user],
   );
+  const animal = getAnimal(user?.avatar);
 
   return (
     <div className="relative min-h-dvh pb-32">
@@ -22,17 +24,17 @@ export function Home() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div
-              className="w-11 h-11 rounded-2xl flex items-center justify-center font-display font-bold text-white"
-              style={{ background: user?.avatarColor ?? "var(--color-violet)" }}
+              className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl"
+              style={{ background: animal.bg }}
             >
-              {user?.name?.[0]?.toUpperCase() ?? "?"}
+              {animal.emoji}
             </div>
             <div>
               <p className="text-muted text-xs">Willkommen zurück</p>
               <p className="font-semibold">{user?.name}</p>
             </div>
           </div>
-          <button className="w-10 h-10 rounded-full bg-surface flex items-center justify-center">
+          <button className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center">
             <Search size={18} className="text-muted" />
           </button>
         </div>
@@ -40,14 +42,14 @@ export function Home() {
         <h1 className="font-display text-3xl font-extrabold leading-tight mb-1">
           Lass uns dein
           <br />
-          nächstes <span className="text-violet">Experiment</span> starten.
+          nächstes <span className="text-primary">Experiment</span> starten.
         </h1>
 
         <button
           onClick={() => navigate("/neu")}
           className="w-full mt-6 rounded-3xl p-5 flex items-center justify-between text-left"
           style={{
-            background: "linear-gradient(135deg, var(--color-violet), var(--color-violet-2))",
+            background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
           }}
         >
           <div>
@@ -63,7 +65,7 @@ export function Home() {
           <h2 className="font-display font-bold text-lg">Deine letzten Protokolle</h2>
           <button
             onClick={() => navigate("/protokolle")}
-            className="text-sm text-violet font-semibold"
+            className="text-sm text-primary font-semibold"
           >
             Alle
           </button>

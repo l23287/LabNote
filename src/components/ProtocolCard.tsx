@@ -1,12 +1,12 @@
-import { FlaskConical } from "lucide-react";
+import { Check, FlaskConical, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Protocol } from "../types";
 
 const TILE_GRADIENTS = [
-  "linear-gradient(135deg, #8b6bff, #5c3bfa)",
-  "linear-gradient(135deg, #ff9fc4, #ff7fb0)",
-  "linear-gradient(135deg, #ffd27a, #ffb648)",
-  "linear-gradient(135deg, #6be8d4, #3ee6c4)",
+  "linear-gradient(135deg, #4caf7d, #1f5c3d)",
+  "linear-gradient(135deg, #ffb066, #ff9d42)",
+  "linear-gradient(135deg, #ffd873, #ffc94d)",
+  "linear-gradient(135deg, #6ec3e0, #3d94b8)",
 ];
 
 function formatDate(iso: string) {
@@ -19,6 +19,7 @@ function formatDate(iso: string) {
 export function ProtocolCard({ protocol, index = 0 }: { protocol: Protocol; index?: number }) {
   const navigate = useNavigate();
   const gradient = TILE_GRADIENTS[index % TILE_GRADIENTS.length];
+  const status = protocol.submittedAt ? "eingereicht" : protocol.result ? "fertig" : "in Arbeit";
 
   return (
     <button
@@ -45,12 +46,14 @@ export function ProtocolCard({ protocol, index = 0 }: { protocol: Protocol; inde
             className="h-full rounded-full"
             style={{
               width: protocol.result ? "100%" : "70%",
-              background: "linear-gradient(90deg, var(--color-violet), var(--color-pink))",
+              background: "linear-gradient(90deg, var(--color-primary), var(--color-accent))",
             }}
           />
         </div>
-        <span className="text-[11px] text-muted-2">
-          {protocol.result ? "fertig" : "in Arbeit"}
+        <span className="text-[11px] text-muted-2 flex items-center gap-1">
+          {protocol.submittedAt && <Send size={10} />}
+          {!protocol.submittedAt && protocol.result && <Check size={10} />}
+          {status}
         </span>
       </div>
     </button>

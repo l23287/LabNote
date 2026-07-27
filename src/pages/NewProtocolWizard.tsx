@@ -1,26 +1,36 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Plus, X, Check, Pencil, Beaker } from "lucide-react";
 import { WizardHeader } from "../components/WizardHeader";
+import { SortableStepList } from "../components/SortableStepList";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { useAuth } from "../context/AuthContext";
-import { getProtocols, saveProtocols } from "../lib/storage";
+import { getProtocol, upsertProtocol } from "../lib/storage";
 import type { Protocol, ProtocolDraft } from "../types";
 import { emptyDraft } from "../types";
 
 const TOTAL_STEPS = 6;
 
+function toDraft(protocol: Protocol): ProtocolDraft {
+  return {
+    question: protocol.question,
+    materials: protocol.materials,
+    procedure: protocol.procedure,
+    hypothesis: protocol.hypothesis,
+    observation: protocol.observation,
+    result: protocol.result,
+  };
+}
+
 function ListEditor({
   items,
   onChange,
   placeholder,
-  ordered = false,
 }: {
   items: string[];
   onChange: (items: string[]) => void;
   placeholder: string;
-  ordered?: boolean;
 }) {
   const [value, setValue] = useState("");
 
@@ -50,13 +60,15 @@ function ListEditor({
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKey}
           placeholder={placeholder}
-          className="flex-1 h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-violet"
+          className="flex-1 h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
         />
         <button
           onClick={add}
           type="button"
           className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, var(--color-violet), var(--color-violet-2))" }}
+          style={{
+            background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
+          }}
         >
           <Plus className="text-white" />
         </button>
@@ -69,11 +81,6 @@ function ListEditor({
               key={i}
               className="flex items-center gap-3 bg-surface border border-border rounded-2xl px-4 py-3"
             >
-              {ordered && (
-                <span className="w-6 h-6 rounded-full bg-bg-soft text-xs flex items-center justify-center text-muted font-semibold shrink-0">
-                  {i + 1}
-                </span>
-              )}
               <span className="flex-1 text-sm">{item}</span>
               <button onClick={() => remove(i)} type="button" className="text-muted-2">
                 <X size={16} />
@@ -87,10 +94,27 @@ function ListEditor({
 }
 
 export function NewProtocolWizard() {
+  const { id } = useParams();
+  const isEditing = Boolean(id);
+  const existing = useMemo(() => (id ? getProtocol(id) : undefined), [id]);
+
   const [step, setStep] = useState(1);
-  const [draft, setDraft] = useState<ProtocolDraft>(emptyDraft);
+  const [draft, setDraft] = useState<ProtocolDraft>(() =>
+    existing ? toDraft(existing) : emptyDraft,
+  );
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  if (isEditing && !existing) {
+    return (
+      <div className="min-h-dvh flex flex-col items-center justify-center gap-4 px-6 text-center">
+        <p className="text-muted">Dieses Protokoll wurde nicht gefunden.</p>
+        <button onClick={() => navigate("/protokolle")} className="text-primary font-semibold">
+          Zurück zur Übersicht
+        </button>
+      </div>
+    );
+  }
 
   function update<K extends keyof ProtocolDraft>(key: K, value: ProtocolDraft[K]) {
     setDraft((d) => ({ ...d, [key]: value }));
@@ -112,6 +136,19 @@ export function NewProtocolWizard() {
   function handleSave() {
     if (!user) return;
     const now = new Date().toISOString();
+
+    if (isEditing && existing) {
+      const updated: Protocol = {
+        ...existing,
+        ...draft,
+        updatedAt: now,
+        submittedAt: undefined,
+      };
+      upsertProtocol(updated);
+      navigate(`/protokolle/${updated.id}`);
+      return;
+    }
+
     const protocol: Protocol = {
       id: crypto.randomUUID(),
       userId: user.id,
@@ -119,7 +156,7 @@ export function NewProtocolWizard() {
       createdAt: now,
       updatedAt: now,
     };
-    saveProtocols([...getProtocols(), protocol]);
+    upsertProtocol(protocol);
     navigate(`/protokolle/${protocol.id}`);
   }
 
@@ -186,7 +223,7 @@ export function NewProtocolWizard() {
         <div className="pt-4">
           <PrimaryButton onClick={handleSave}>
             <span className="flex items-center justify-center gap-2">
-              <Check size={20} /> Protokoll speichern
+              <Check size={20} /> {isEditing ? "Änderungen speichern" : "Protokoll speichern"}
             </span>
           </PrimaryButton>
         </div>
@@ -195,10 +232,7 @@ export function NewProtocolWizard() {
   }
 
   return (
-    <form
-      onSubmit={goNext}
-      className="min-h-dvh flex flex-col px-6 pt-6 pb-8"
-    >
+    <form onSubmit={goNext} className="min-h-dvh flex flex-col px-6 pt-6 pb-8">
       <WizardHeader
         step={step}
         total={TOTAL_STEPS}
@@ -215,7 +249,7 @@ export function NewProtocolWizard() {
             value={draft.question}
             onChange={(e) => update("question", e.target.value)}
             placeholder="z.B. Wie wirkt sich Salz auf den Siedepunkt von Wasser aus?"
-            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-violet resize-none"
+            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-primary resize-none"
           />
         )}
 
@@ -228,11 +262,10 @@ export function NewProtocolWizard() {
         )}
 
         {step === 3 && (
-          <ListEditor
+          <SortableStepList
             items={draft.procedure}
             onChange={(items) => update("procedure", items)}
             placeholder="z.B. Wasser in den Topf füllen"
-            ordered
           />
         )}
 
@@ -242,7 +275,7 @@ export function NewProtocolWizard() {
             value={draft.hypothesis}
             onChange={(e) => update("hypothesis", e.target.value)}
             placeholder="z.B. Ich vermute, dass das Salzwasser später kocht."
-            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-violet resize-none"
+            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-primary resize-none"
           />
         )}
 
@@ -252,7 +285,7 @@ export function NewProtocolWizard() {
             value={draft.observation}
             onChange={(e) => update("observation", e.target.value)}
             placeholder="Was ist während des Versuchs passiert?"
-            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-violet resize-none"
+            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-primary resize-none"
           />
         )}
 
@@ -262,7 +295,7 @@ export function NewProtocolWizard() {
             value={draft.result}
             onChange={(e) => update("result", e.target.value)}
             placeholder="Was bedeutet dein Ergebnis? Hattest du recht mit deiner Vermutung?"
-            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-violet resize-none"
+            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-primary resize-none"
           />
         )}
       </div>
@@ -296,7 +329,7 @@ const STEP_META = [
   },
   {
     title: "Wie führst du den Versuch durch?",
-    hint: "Schreibe die einzelnen Schritte der Durchführung auf.",
+    hint: "Schreibe die einzelnen Schritte der Durchführung auf und bring sie in die richtige Reihenfolge.",
   },
   {
     title: "Was vermutest du?",
@@ -325,7 +358,7 @@ function SummaryBlock({
     <div className="rounded-2xl bg-surface border border-border p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Beaker size={14} className="text-violet" />
+          <Beaker size={14} className="text-primary" />
           <span className="text-xs font-semibold text-muted uppercase tracking-wide">
             {title}
           </span>

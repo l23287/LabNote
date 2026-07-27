@@ -7,11 +7,11 @@ const navItemBase =
 export function BottomNav() {
   return (
     <nav className="sticky bottom-0 inset-x-0 z-30 px-4 pb-4 pt-2">
-      <div className="mx-auto flex items-center h-16 rounded-[28px] bg-surface/90 backdrop-blur border border-border shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <div className="mx-auto flex items-center h-16 rounded-[28px] bg-surface/95 backdrop-blur border border-border shadow-[0_10px_30px_rgba(38,48,31,0.15)]">
         <NavLink
           to="/home"
           className={({ isActive }) =>
-            `${navItemBase} ${isActive ? "text-violet" : "text-muted"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <House size={20} strokeWidth={2.2} />
@@ -19,7 +19,7 @@ export function BottomNav() {
         <NavLink
           to="/protokolle"
           className={({ isActive }) =>
-            `${navItemBase} ${isActive ? "text-violet" : "text-muted"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <FlaskConical size={20} strokeWidth={2.2} />
@@ -28,9 +28,9 @@ export function BottomNav() {
         <div className="flex-1 flex justify-center">
           <NavLink
             to="/neu"
-            className="w-14 h-14 -mt-8 rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(139,107,255,0.5)]"
+            className="w-14 h-14 -mt-8 rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(255,157,66,0.45)]"
             style={{
-              background: "linear-gradient(135deg, var(--color-violet), var(--color-violet-2))",
+              background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))",
             }}
           >
             <Plus size={26} className="text-white" strokeWidth={2.5} />
@@ -40,7 +40,7 @@ export function BottomNav() {
         <NavLink
           to="/kalender"
           className={({ isActive }) =>
-            `${navItemBase} ${isActive ? "text-violet" : "text-muted"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <CalendarDays size={20} strokeWidth={2.2} />
@@ -48,7 +48,7 @@ export function BottomNav() {
         <NavLink
           to="/profil"
           className={({ isActive }) =>
-            `${navItemBase} ${isActive ? "text-violet" : "text-muted"}`
+            `${navItemBase} ${isActive ? "text-primary" : "text-muted"}`
           }
         >
           <UserRound size={20} strokeWidth={2.2} />

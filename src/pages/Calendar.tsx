@@ -115,17 +115,17 @@ export function CalendarPage() {
                     isSelected
                       ? "text-white font-semibold"
                       : isToday
-                        ? "text-violet font-semibold"
+                        ? "text-primary font-semibold"
                         : "text-ink"
                   }`}
                   style={
                     isSelected
                       ? {
                           background:
-                            "linear-gradient(135deg, var(--color-violet), var(--color-violet-2))",
+                            "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
                         }
                       : isToday
-                        ? { border: "1px solid var(--color-violet)" }
+                        ? { border: "1px solid var(--color-primary)" }
                         : undefined
                   }
                 >
@@ -134,7 +134,7 @@ export function CalendarPage() {
                 <span
                   className="w-1 h-1 rounded-full"
                   style={{
-                    background: hasProtocol ? "var(--color-pink)" : "transparent",
+                    background: hasProtocol ? "var(--color-accent)" : "transparent",
                   }}
                 />
               </button>

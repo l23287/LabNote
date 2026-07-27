@@ -82,6 +82,16 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/protokolle/:id/bearbeiten"
+        element={
+          <RequireAuth>
+            <AppLayout nav={false}>
+              <NewProtocolWizard />
+            </AppLayout>
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/kalender"
         element={
           <RequireAuth>

@@ -34,7 +34,7 @@ export function WizardHeader({ step, total, onBack, title }: WizardHeaderProps) 
             style={{
               background:
                 i < step
-                  ? "linear-gradient(90deg, var(--color-violet), var(--color-pink))"
+                  ? "linear-gradient(90deg, var(--color-primary), var(--color-accent))"
                   : "var(--color-surface-2)",
             }}
           />

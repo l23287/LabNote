@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 
 interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "solid" | "ghost";
+  variant?: "solid" | "ghost" | "accent";
 }
 
 export function PrimaryButton({
@@ -21,13 +21,17 @@ export function PrimaryButton({
     );
   }
 
+  const gradient =
+    variant === "accent"
+      ? "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))"
+      : "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))";
+  const shadow =
+    variant === "accent" ? "0 10px 25px rgba(255,157,66,0.35)" : "0 10px 25px rgba(52,132,90,0.3)";
+
   return (
     <button
       className={`w-full h-14 rounded-2xl font-semibold text-white disabled:opacity-40 transition active:scale-[0.98] ${className}`}
-      style={{
-        background: "linear-gradient(135deg, var(--color-violet), var(--color-violet-2))",
-        boxShadow: "0 10px 25px rgba(139,107,255,0.35)",
-      }}
+      style={{ background: gradient, boxShadow: shadow }}
       {...props}
     >
       {children}

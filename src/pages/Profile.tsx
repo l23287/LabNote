@@ -1,22 +1,33 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FlaskConical, LogOut, Sparkles } from "lucide-react";
+import { Check, FlaskConical, LogOut, Sparkles } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getProtocolsForUser } from "../lib/storage";
+import { ANIMALS, getAnimal } from "../lib/animals";
 
 export function Profile() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const protocols = useMemo(
     () => (user ? getProtocolsForUser(user.id) : []),
     [user],
   );
+  const [teacherEmail, setTeacherEmail] = useState(user?.teacherEmail ?? "");
+  const [saved, setSaved] = useState(false);
 
   if (!user) return null;
+
+  const animal = getAnimal(user.avatar);
 
   function handleLogout() {
     logout();
     navigate("/");
+  }
+
+  function handleTeacherEmailSave() {
+    updateUser({ teacherEmail: teacherEmail.trim() });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1500);
   }
 
   return (
@@ -25,10 +36,10 @@ export function Profile() {
 
       <div className="flex flex-col items-center text-center mb-8">
         <div
-          className="w-20 h-20 rounded-full flex items-center justify-center font-display font-bold text-3xl text-white mb-4"
-          style={{ background: user.avatarColor }}
+          className="w-20 h-20 rounded-full flex items-center justify-center text-4xl mb-4"
+          style={{ background: animal.bg }}
         >
-          {user.name[0]?.toUpperCase()}
+          {animal.emoji}
         </div>
         <p className="font-display font-bold text-xl">{user.name}</p>
         <p className="text-muted text-sm">{user.email}</p>
@@ -36,12 +47,12 @@ export function Profile() {
 
       <div className="grid grid-cols-2 gap-3 mb-8">
         <div className="rounded-3xl bg-surface border border-border p-5 flex flex-col items-center gap-2">
-          <FlaskConical size={20} className="text-violet" />
+          <FlaskConical size={20} className="text-primary" />
           <span className="font-display font-bold text-2xl">{protocols.length}</span>
           <span className="text-muted text-xs text-center">Protokolle erstellt</span>
         </div>
         <div className="rounded-3xl bg-surface border border-border p-5 flex flex-col items-center gap-2">
-          <Sparkles size={20} className="text-amber" />
+          <Sparkles size={20} className="text-sun" />
           <span className="font-display font-bold text-2xl">
             {new Date(user.createdAt).toLocaleDateString("de-DE", {
               month: "short",
@@ -52,9 +63,63 @@ export function Profile() {
         </div>
       </div>
 
+      <div className="mb-8">
+        <h2 className="font-display font-bold mb-1">Wähle dein Tier</h2>
+        <p className="text-muted text-sm mb-4">
+          Such dir ein Profilbild für deinen Account aus.
+        </p>
+        <div className="grid grid-cols-4 gap-3">
+          {ANIMALS.map((a) => {
+            const isSelected = a.id === user.avatar;
+            return (
+              <button
+                key={a.id}
+                onClick={() => updateUser({ avatar: a.id })}
+                className="relative aspect-square rounded-2xl flex items-center justify-center text-2xl transition"
+                style={{
+                  background: a.bg,
+                  outline: isSelected ? "3px solid var(--color-primary)" : "none",
+                  outlineOffset: "2px",
+                }}
+                aria-label={a.label}
+              >
+                {a.emoji}
+                {isSelected && (
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <Check size={12} className="text-white" />
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="font-display font-bold mb-1">E-Mail deiner Lehrkraft</h2>
+        <p className="text-muted text-sm mb-4">
+          Wird beim Einreichen eines Protokolls als Empfänger vorgeschlagen.
+        </p>
+        <div className="flex gap-2">
+          <input
+            type="email"
+            value={teacherEmail}
+            onChange={(e) => setTeacherEmail(e.target.value)}
+            placeholder="lehrer@schule.de"
+            className="flex-1 h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
+          />
+          <button
+            onClick={handleTeacherEmailSave}
+            className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-primary text-white font-semibold"
+          >
+            {saved ? <Check size={20} /> : "OK"}
+          </button>
+        </div>
+      </div>
+
       <button
         onClick={handleLogout}
-        className="w-full h-14 rounded-2xl bg-surface border border-border flex items-center justify-center gap-2 text-pink font-semibold"
+        className="w-full h-14 rounded-2xl bg-surface border border-border flex items-center justify-center gap-2 text-danger font-semibold"
       >
         <LogOut size={18} />
         Abmelden

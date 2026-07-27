@@ -3,7 +3,8 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  avatarColor: string;
+  avatar: string;
+  teacherEmail?: string;
   createdAt: string;
 }
 
@@ -18,9 +19,13 @@ export interface Protocol {
   result: string;
   createdAt: string;
   updatedAt: string;
+  submittedAt?: string;
 }
 
-export type ProtocolDraft = Omit<Protocol, "id" | "userId" | "createdAt" | "updatedAt">;
+export type ProtocolDraft = Omit<
+  Protocol,
+  "id" | "userId" | "createdAt" | "updatedAt" | "submittedAt"
+>;
 
 export const emptyDraft: ProtocolDraft = {
   question: "",

@@ -1,12 +1,13 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "../types";
+import { randomAnimalId } from "../lib/animals";
 import {
-  AVATAR_COLORS,
   getSessionUserId,
   getUsers,
   saveUsers,
   setSessionUserId,
+  updateUser as updateUserInStorage,
 } from "../lib/storage";
 
 interface AuthContextValue {
@@ -18,6 +19,7 @@ interface AuthContextValue {
     password: string,
   ) => { ok: true } | { ok: false; error: string };
   logout: () => void;
+  updateUser: (patch: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -56,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           name: name.trim(),
           email: email.trim(),
           password,
-          avatarColor: AVATAR_COLORS[users.length % AVATAR_COLORS.length],
+          avatar: randomAnimalId(),
           createdAt: new Date().toISOString(),
         };
         saveUsers([...users, newUser]);
@@ -67,6 +69,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout: () => {
         setSessionUserId(null);
         setUser(null);
+      },
+      updateUser: (patch) => {
+        setUser((current) => {
+          if (!current) return current;
+          return updateUserInStorage(current.id, patch) ?? current;
+        });
       },
     }),
     [user],

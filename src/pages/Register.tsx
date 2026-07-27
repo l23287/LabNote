@@ -30,13 +30,13 @@ export function Register() {
     <div className="relative min-h-dvh flex flex-col px-6 pt-6">
       <button
         onClick={() => navigate(-1)}
-        className="w-10 h-10 rounded-full bg-surface flex items-center justify-center mb-8"
+        className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center mb-8"
       >
         <ChevronLeft size={20} />
       </button>
 
-      <div className="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center mb-6">
-        <FlaskConical size={22} className="text-violet" />
+      <div className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center mb-6">
+        <FlaskConical size={22} className="text-primary" />
       </div>
 
       <h1 className="font-display text-3xl font-extrabold mb-2">Leg los!</h1>
@@ -52,7 +52,7 @@ export function Register() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="z.B. Mia"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-violet"
+            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 
@@ -64,7 +64,7 @@ export function Register() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="du@schule.de"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-violet"
+            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 
@@ -76,11 +76,11 @@ export function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-violet"
+            className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
           />
         </label>
 
-        {error && <p className="text-pink text-sm">{error}</p>}
+        {error && <p className="text-danger text-sm">{error}</p>}
 
         <div className="flex-1" />
 
@@ -88,7 +88,7 @@ export function Register() {
 
         <p className="text-center text-muted text-sm pb-6">
           Schon registriert?{" "}
-          <Link to="/anmelden" className="text-violet font-semibold">
+          <Link to="/anmelden" className="text-primary font-semibold">
             Anmelden
           </Link>
         </p>

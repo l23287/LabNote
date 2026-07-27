@@ -17,14 +17,22 @@ function write<T>(key: string, value: T) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-export const AVATAR_COLORS = ["#8b6bff", "#ff7fb0", "#ffb648", "#3ee6c4", "#5c3bfa"];
-
 export function getUsers(): User[] {
   return read<User[]>(USERS_KEY, []);
 }
 
 export function saveUsers(users: User[]) {
   write(USERS_KEY, users);
+}
+
+export function updateUser(id: string, patch: Partial<User>): User | null {
+  const users = getUsers();
+  const index = users.findIndex((u) => u.id === id);
+  if (index === -1) return null;
+  const updated = { ...users[index], ...patch };
+  users[index] = updated;
+  saveUsers(users);
+  return updated;
 }
 
 export function getSessionUserId(): string | null {
@@ -48,4 +56,23 @@ export function getProtocolsForUser(userId: string): Protocol[] {
   return getProtocols()
     .filter((p) => p.userId === userId)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export function getProtocol(id: string): Protocol | undefined {
+  return getProtocols().find((p) => p.id === id);
+}
+
+export function upsertProtocol(protocol: Protocol) {
+  const protocols = getProtocols();
+  const index = protocols.findIndex((p) => p.id === protocol.id);
+  if (index === -1) {
+    saveProtocols([...protocols, protocol]);
+  } else {
+    protocols[index] = protocol;
+    saveProtocols(protocols);
+  }
+}
+
+export function deleteProtocol(id: string) {
+  saveProtocols(getProtocols().filter((p) => p.id !== id));
 }

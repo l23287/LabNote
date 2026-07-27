@@ -4,21 +4,23 @@
   --font-display: "Baloo 2", "Plus Jakarta Sans", sans-serif;
   --font-sans: "Plus Jakarta Sans", sans-serif;
 
-  --color-bg: #16121f;
-  --color-bg-soft: #1e1830;
-  --color-surface: #241d38;
-  --color-surface-2: #2c2444;
-  --color-border: #372c54;
+  --color-bg: #faf6ea;
+  --color-bg-soft: #f0f2e2;
+  --color-surface: #ffffff;
+  --color-surface-2: #f2efe0;
+  --color-border: #e8e1cd;
 
-  --color-violet: #8b6bff;
-  --color-violet-2: #5c3bfa;
-  --color-pink: #ff7fb0;
-  --color-amber: #ffb648;
-  --color-teal: #3ee6c4;
+  --color-primary: #34845a;
+  --color-primary-dark: #1f5c3d;
+  --color-primary-soft: #dcecdf;
+  --color-accent: #ff9d42;
+  --color-accent-dark: #f27a1f;
+  --color-sun: #ffc94d;
+  --color-danger: #e5584d;
 
-  --color-ink: #f5f3ff;
-  --color-muted: #a89fc4;
-  --color-muted-2: #6f6690;
+  --color-ink: #26301f;
+  --color-muted: #7c8574;
+  --color-muted-2: #a4ab97;
 }
 
 html,
@@ -57,7 +59,7 @@ body {
   position: absolute;
   border-radius: 9999px;
   filter: blur(60px);
-  opacity: 0.55;
+  opacity: 0.35;
   pointer-events: none;
 }
 
