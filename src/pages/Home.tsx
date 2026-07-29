@@ -81,7 +81,7 @@ export function Home() {
             starten“, um loszulegen!
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {protocols.slice(0, 4).map((p, i) => (
               <ProtocolCard key={p.id} protocol={p} index={i} />
             ))}

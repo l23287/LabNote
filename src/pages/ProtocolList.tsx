@@ -59,7 +59,7 @@ export function ProtocolList() {
           {normalizedQuery ? "Keine Protokolle gefunden." : "Du hast noch kein Protokoll erstellt."}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {filtered.map((p, i) => (
             <ProtocolCard key={p.id} protocol={p} index={i} />
           ))}

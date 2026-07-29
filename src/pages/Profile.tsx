@@ -81,7 +81,7 @@ export function Profile() {
         <p className="text-muted text-sm mb-4">
           Such dir ein Profilbild für deinen Account aus.
         </p>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
           {ANIMALS.map((a) => {
             const isSelected = a.id === user.avatar;
             return (

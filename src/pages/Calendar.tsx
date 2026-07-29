@@ -154,7 +154,7 @@ export function CalendarPage() {
         {selectedDayProtocols.length === 0 ? (
           <p className="text-muted text-sm">An diesem Tag wurde kein Protokoll erstellt.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {selectedDayProtocols.map((p, i) => (
               <ProtocolCard key={p.id} protocol={p} index={i} />
             ))}

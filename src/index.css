@@ -55,6 +55,18 @@ body {
   background: var(--color-bg);
 }
 
+@media (min-width: 768px) {
+  .app-shell {
+    max-width: 40rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    max-width: 48rem;
+  }
+}
+
 .blob {
   position: absolute;
   border-radius: 9999px;

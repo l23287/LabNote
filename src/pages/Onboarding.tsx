@@ -19,7 +19,7 @@ export function Onboarding() {
         </div>
 
         <div className="flex-1 flex items-center justify-center">
-          <div className="relative w-64 h-64">
+          <div className="relative w-64 h-64 md:w-80 md:h-80">
             <div
               className="absolute inset-0 rounded-[40%_60%_60%_40%/50%_40%_60%_50%] blob-float"
               style={{
