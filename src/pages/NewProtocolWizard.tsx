@@ -137,7 +137,7 @@ export function NewProtocolWizard() {
 
   function goBack() {
     if (step === 1) {
-      navigate(-1);
+      navigate("/home");
     } else {
       setStep((s) => s - 1);
     }
