@@ -184,16 +184,7 @@ export function ProtocolDetail() {
         </Section>
 
         <Section icon={<FlaskConical size={16} />} title="Durchführung">
-          <ol className="space-y-2">
-            {protocol.procedure.map((s, i) => (
-              <li key={i} className="text-sm flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-bg-soft text-[11px] flex items-center justify-center text-muted font-semibold shrink-0 mt-0.5">
-                  {i + 1}
-                </span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ol>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">{protocol.procedure}</p>
           <ImageGallery images={protocol.images.procedure} />
         </Section>
 

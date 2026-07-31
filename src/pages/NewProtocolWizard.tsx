@@ -3,7 +3,6 @@ import type { FormEvent, KeyboardEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Plus, X, Check, Pencil, Beaker } from "lucide-react";
 import { WizardHeader } from "../components/WizardHeader";
-import { SortableStepList } from "../components/SortableStepList";
 import { ImagePicker } from "../components/ImagePicker";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { useAuth } from "../context/AuthContext";
@@ -207,7 +206,7 @@ export function NewProtocolWizard() {
       case 2:
         return draft.materials.length > 0;
       case 3:
-        return draft.procedure.length > 0;
+        return draft.procedure.trim().length > 0;
       case 4:
         return true;
       case 5:
@@ -243,11 +242,7 @@ export function NewProtocolWizard() {
             <ImageThumbs images={draft.images.materials} />
           </SummaryBlock>
           <SummaryBlock title="Durchführung" onEdit={() => setStep(3)}>
-            <ol className="text-sm list-decimal list-inside space-y-1">
-              {draft.procedure.map((s, i) => (
-                <li key={i}>{s}</li>
-              ))}
-            </ol>
+            <p className="text-sm whitespace-pre-wrap">{draft.procedure}</p>
             <ImageThumbs images={draft.images.procedure} />
           </SummaryBlock>
           {(draft.hypothesis || draft.images.hypothesis.length > 0) && (
@@ -308,10 +303,12 @@ export function NewProtocolWizard() {
         )}
 
         {step === 3 && (
-          <SortableStepList
-            items={draft.procedure}
-            onChange={(items) => update("procedure", items)}
-            placeholder="z.B. Wasser in den Topf füllen"
+          <textarea
+            autoFocus
+            value={draft.procedure}
+            onChange={(e) => update("procedure", e.target.value)}
+            placeholder="z.B. Zuerst das Wasser in den Topf füllen, dann erhitzen und die Temperatur messen…"
+            className="w-full h-40 rounded-2xl bg-surface border border-border p-4 outline-none focus:border-primary resize-none"
           />
         )}
 
