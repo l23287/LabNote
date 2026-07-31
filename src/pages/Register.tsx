@@ -12,13 +12,13 @@ export function Register() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password.length < 4) {
       setError("Das Passwort muss mindestens 4 Zeichen haben.");
       return;
     }
-    const result = register(name, email, password);
+    const result = await register(name, email, password);
     if (!result.ok) {
       setError(result.error);
       return;

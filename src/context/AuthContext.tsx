@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "../types";
 import { randomAnimalId } from "../lib/animals";
+import { generateSalt, hashPassword } from "../lib/crypto";
 import {
   getSessionUserId,
   getUsers,
@@ -10,14 +11,12 @@ import {
   updateUser as updateUserInStorage,
 } from "../lib/storage";
 
+type AuthResult = { ok: true } | { ok: false; error: string };
+
 interface AuthContextValue {
   user: User | null;
-  login: (email: string, password: string) => { ok: true } | { ok: false; error: string };
-  register: (
-    name: string,
-    email: string,
-    password: string,
-  ) => { ok: true } | { ok: false; error: string };
+  login: (email: string, password: string) => Promise<AuthResult>;
+  register: (name: string, email: string, password: string) => Promise<AuthResult>;
   logout: () => void;
   updateUser: (patch: Partial<User>) => void;
 }
@@ -34,18 +33,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
-      login: (email, password) => {
+      login: async (email, password) => {
         const found = getUsers().find(
           (u) => u.email.toLowerCase() === email.trim().toLowerCase(),
         );
-        if (!found || found.password !== password) {
+        if (!found) {
+          return { ok: false, error: "E-Mail oder Passwort ist falsch." };
+        }
+        const attemptHash = await hashPassword(password, found.passwordSalt);
+        if (attemptHash !== found.passwordHash) {
           return { ok: false, error: "E-Mail oder Passwort ist falsch." };
         }
         setSessionUserId(found.id);
         setUser(found);
         return { ok: true };
       },
-      register: (name, email, password) => {
+      register: async (name, email, password) => {
         const users = getUsers();
         const exists = users.some(
           (u) => u.email.toLowerCase() === email.trim().toLowerCase(),
@@ -53,11 +56,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (exists) {
           return { ok: false, error: "Für diese E-Mail gibt es schon einen Account." };
         }
+        const passwordSalt = generateSalt();
+        const passwordHash = await hashPassword(password, passwordSalt);
         const newUser: User = {
           id: crypto.randomUUID(),
           name: name.trim(),
           email: email.trim(),
-          password,
+          passwordHash,
+          passwordSalt,
           avatar: randomAnimalId(),
           createdAt: new Date().toISOString(),
         };

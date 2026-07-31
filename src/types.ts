@@ -2,7 +2,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  password: string;
+  passwordHash: string;
+  passwordSalt: string;
   avatar: string;
   teacherEmail?: string;
   schoolClass?: string;
