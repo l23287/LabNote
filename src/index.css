@@ -100,23 +100,22 @@ body {
 @keyframes blob-organic-float {
   0%,
   100% {
-    border-radius: 48% 52% 55% 45% / 55% 45% 55% 45%;
     transform: translateY(0) scale(1);
   }
   50% {
-    border-radius: 55% 45% 48% 52% / 45% 55% 45% 55%;
     transform: translateY(-8px) scale(1.03);
   }
 }
 
 .glow-bubble {
   position: absolute;
-  border-radius: 48% 52% 55% 45% / 55% 45% 55% 45%;
-  background: radial-gradient(circle at 35% 30%, #baf27a 0%, #6fcf5a 35%, #1f7a3f 70%, #0d3a1e 100%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #d9f9a8 0%, #8fe36a 20%, #4fbf4a 46%, #1f7a3f 72%, #0c3319 100%);
   box-shadow:
-    0 0 60px 10px rgba(120, 220, 90, 0.55),
-    0 0 120px 40px rgba(80, 200, 70, 0.25);
-  filter: blur(0.5px);
+    inset 0 0 0 1.5px rgba(214, 255, 176, 0.35),
+    inset -14px -18px 40px rgba(0, 0, 0, 0.4),
+    0 0 60px 12px rgba(120, 220, 90, 0.45),
+    0 0 130px 46px rgba(80, 200, 70, 0.22);
   animation: blob-organic-float 6s ease-in-out infinite;
   transition:
     left 900ms cubic-bezier(0.4, 0, 0.2, 1),
