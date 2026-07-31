@@ -95,10 +95,21 @@ export function ProtocolDetail() {
       const updated = { ...protocol, submittedAt: new Date().toISOString() };
       upsertProtocol(updated);
       setProtocol(updated);
+
+      if (result === "downloaded" && user.teacherEmail) {
+        const subject = encodeURIComponent(`Protokoll: ${protocol.question || "Experiment"}`);
+        const body = encodeURIComponent(
+          `Hallo,\n\nanbei mein Experimentprotokoll. Das PDF wurde gerade heruntergeladen – bitte diese E-Mail damit ergänzen (Anhang hinzufügen).\n\nViele Grüße\n${user.name}`,
+        );
+        window.location.href = `mailto:${user.teacherEmail}?subject=${subject}&body=${body}`;
+      }
+
       setFeedback(
         result === "shared"
           ? "Protokoll geteilt."
-          : "PDF heruntergeladen – jetzt an deine Lehrkraft senden.",
+          : user.teacherEmail
+            ? "PDF heruntergeladen. Eine E-Mail an deine Lehrkraft wird geöffnet – bitte das PDF dort manuell anhängen."
+            : "PDF heruntergeladen. Sende es selbst an deine Lehrkraft, oder hinterlege ihre E-Mail-Adresse im Profil, damit wir das nächste Mal die E-Mail für dich vorbereiten.",
       );
     } catch {
       setFeedback("Das PDF konnte nicht erstellt werden.");
@@ -219,7 +230,7 @@ export function ProtocolDetail() {
           }}
         >
           {submitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-          {protocol.submittedAt ? "Erneut als PDF einreichen" : "Als PDF einreichen"}
+          {protocol.submittedAt ? "PDF erneut erstellen & senden" : "PDF erstellen & senden"}
         </button>
 
         <button

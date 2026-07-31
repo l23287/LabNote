@@ -81,3 +81,8 @@ export function upsertProtocol(protocol: Protocol) {
 export function deleteProtocol(id: string) {
   saveProtocols(getProtocols().filter((p) => p.id !== id));
 }
+
+export function deleteUser(id: string) {
+  saveUsers(getUsers().filter((u) => u.id !== id));
+  saveProtocols(getProtocols().filter((p) => p.userId !== id));
+}

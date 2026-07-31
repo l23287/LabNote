@@ -10,12 +10,17 @@ export function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password.length < 4) {
       setError("Das Passwort muss mindestens 4 Zeichen haben.");
+      return;
+    }
+    if (!consent) {
+      setError("Bitte bestätige die Einwilligung, um fortzufahren.");
       return;
     }
     const result = await register(name, email, password);
@@ -78,6 +83,22 @@ export function Register() {
             placeholder="••••••••"
             className="h-14 rounded-2xl bg-surface border border-border px-4 outline-none focus:border-primary"
           />
+        </label>
+
+        <label className="flex items-start gap-3 py-1">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-0.5 w-5 h-5 shrink-0 accent-primary"
+          />
+          <span className="text-sm text-muted leading-relaxed">
+            Ich habe die Einwilligung meiner Erziehungsberechtigten und akzeptiere die{" "}
+            <Link to="/datenschutz" className="text-primary font-semibold">
+              Datenschutzerklärung
+            </Link>
+            .
+          </span>
         </label>
 
         {error && <p className="text-danger text-sm">{error}</p>}

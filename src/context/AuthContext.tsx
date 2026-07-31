@@ -4,6 +4,7 @@ import type { User } from "../types";
 import { randomAnimalId } from "../lib/animals";
 import { generateSalt, hashPassword } from "../lib/crypto";
 import {
+  deleteUser as deleteUserInStorage,
   getSessionUserId,
   getUsers,
   saveUsers,
@@ -19,6 +20,7 @@ interface AuthContextValue {
   register: (name: string, email: string, password: string) => Promise<AuthResult>;
   logout: () => void;
   updateUser: (patch: Partial<User>) => void;
+  deleteAccount: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -81,6 +83,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!current) return current;
           return updateUserInStorage(current.id, patch) ?? current;
         });
+      },
+      deleteAccount: () => {
+        setUser((current) => {
+          if (!current) return current;
+          deleteUserInStorage(current.id);
+          return current;
+        });
+        setSessionUserId(null);
+        setUser(null);
       },
     }),
     [user],

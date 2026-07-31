@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { BottomNav } from "./components/BottomNav";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Onboarding } from "./pages/Onboarding";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
@@ -10,6 +11,7 @@ import { ProtocolList } from "./pages/ProtocolList";
 import { ProtocolDetail } from "./pages/ProtocolDetail";
 import { CalendarPage } from "./pages/Calendar";
 import { Profile } from "./pages/Profile";
+import { Privacy } from "./pages/Privacy";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -40,6 +42,7 @@ function AppRoutes() {
         path="/registrieren"
         element={user ? <Navigate to="/home" replace /> : <Register />}
       />
+      <Route path="/datenschutz" element={<Privacy />} />
 
       <Route
         path="/home"
@@ -119,9 +122,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
