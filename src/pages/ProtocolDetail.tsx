@@ -124,7 +124,8 @@ export function ProtocolDetail() {
     <div className="min-h-dvh px-6 pt-6 pb-32">
       <div className="flex items-center justify-between mb-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/home")}
+          aria-label="Zur Übersicht"
           className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center"
         >
           <ChevronLeft size={20} />
