@@ -9,6 +9,9 @@ const TILE_GRADIENTS = [
   "linear-gradient(135deg, #2dd4bf, #115e59)",
 ];
 
+const IN_PROGRESS_TILE_GRADIENT = "linear-gradient(135deg, #60a5fa, #1e3a8a)";
+const IN_PROGRESS_BAR_GRADIENT = "linear-gradient(90deg, #60a5fa, #1d4ed8)";
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("de-DE", {
     day: "2-digit",
@@ -18,7 +21,10 @@ function formatDate(iso: string) {
 
 export function ProtocolCard({ protocol, index = 0 }: { protocol: Protocol; index?: number }) {
   const navigate = useNavigate();
-  const gradient = TILE_GRADIENTS[index % TILE_GRADIENTS.length];
+  const isInProgress = !protocol.submittedAt && !protocol.result;
+  const gradient = isInProgress
+    ? IN_PROGRESS_TILE_GRADIENT
+    : TILE_GRADIENTS[index % TILE_GRADIENTS.length];
   const status = protocol.submittedAt ? "eingereicht" : protocol.result ? "fertig" : "in Arbeit";
 
   return (
@@ -46,7 +52,9 @@ export function ProtocolCard({ protocol, index = 0 }: { protocol: Protocol; inde
             className="h-full rounded-full"
             style={{
               width: protocol.result ? "100%" : "70%",
-              background: "linear-gradient(90deg, var(--color-primary), var(--color-accent))",
+              background: isInProgress
+                ? IN_PROGRESS_BAR_GRADIENT
+                : "linear-gradient(90deg, var(--color-primary), var(--color-accent))",
             }}
           />
         </div>

@@ -63,7 +63,13 @@ export function CalendarPage() {
     return result;
   }, [cursor]);
 
-  const selectedDayProtocols = protocols.filter((p) => sameDay(new Date(p.createdAt), selected));
+  const selectedDayProtocols = protocols
+    .filter((p) => sameDay(new Date(p.createdAt), selected))
+    .sort((a, b) => {
+      const aInProgress = !a.submittedAt && !a.result ? 0 : 1;
+      const bInProgress = !b.submittedAt && !b.result ? 0 : 1;
+      return aInProgress - bInProgress;
+    });
 
   return (
     <div className="min-h-dvh px-6 pt-8 pb-32">
