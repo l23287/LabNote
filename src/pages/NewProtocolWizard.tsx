@@ -148,6 +148,31 @@ export function NewProtocolWizard() {
     setStep((s) => Math.min(s + 1, TOTAL_STEPS + 1));
   }
 
+  function handleSaveAndExit() {
+    if (!user) return;
+    const now = new Date().toISOString();
+
+    if (isEditing && existing) {
+      const updated: Protocol = {
+        ...existing,
+        ...draft,
+        updatedAt: now,
+        submittedAt: undefined,
+      };
+      upsertProtocol(updated);
+    } else {
+      const protocol: Protocol = {
+        id: crypto.randomUUID(),
+        userId: user.id,
+        ...draft,
+        createdAt: now,
+        updatedAt: now,
+      };
+      upsertProtocol(protocol);
+    }
+    navigate("/home");
+  }
+
   function handleSave() {
     if (!user) return;
     const now = new Date().toISOString();
@@ -344,6 +369,14 @@ export function NewProtocolWizard() {
             Überspringen
           </button>
         )}
+        <button
+          type="button"
+          onClick={handleSaveAndExit}
+          disabled={draft.question.trim().length === 0}
+          className="h-10 text-muted text-sm font-medium disabled:opacity-40"
+        >
+          Später fortsetzen & speichern
+        </button>
       </div>
     </form>
   );
