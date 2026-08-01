@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, FlaskConical, LogOut, Sparkles } from "lucide-react";
+import { Check, Download, FlaskConical, LogOut, Sparkles, Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getProtocolsForUser } from "../lib/storage";
 import { ANIMALS, getAnimal } from "../lib/animals";
 
 export function Profile() {
-  const { user, logout, updateUser } = useAuth();
+  const { user, logout, updateUser, deleteAccount } = useAuth();
   const navigate = useNavigate();
   const protocols = useMemo(
     () => (user ? getProtocolsForUser(user.id) : []),
@@ -23,6 +23,29 @@ export function Profile() {
 
   function handleLogout() {
     logout();
+    navigate("/");
+  }
+
+  function handleExportData() {
+    const data = {
+      profil: { name: user!.name, email: user!.email, schoolClass: user!.schoolClass, teacherEmail: user!.teacherEmail, createdAt: user!.createdAt },
+      protokolle: protocols,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "labnote-meine-daten.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleDeleteAccount() {
+    const confirmed = window.confirm(
+      "Möchtest du deinen Account und alle deine Protokolle wirklich unwiderruflich löschen?",
+    );
+    if (!confirmed) return;
+    deleteAccount();
     navigate("/");
   }
 
@@ -147,6 +170,29 @@ export function Profile() {
             className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-primary text-white font-semibold"
           >
             {teacherEmailSaved ? <Check size={20} /> : "OK"}
+          </button>
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="font-display font-bold mb-1">Deine Daten</h2>
+        <p className="text-muted text-sm mb-4">
+          Lade eine Kopie deiner Daten herunter oder lösche deinen Account unwiderruflich.
+        </p>
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={handleExportData}
+            className="w-full h-14 rounded-2xl bg-surface border border-border flex items-center justify-center gap-2 font-semibold"
+          >
+            <Download size={18} />
+            Meine Daten exportieren
+          </button>
+          <button
+            onClick={handleDeleteAccount}
+            className="w-full h-14 rounded-2xl bg-surface border border-border flex items-center justify-center gap-2 text-danger font-semibold"
+          >
+            <Trash2 size={18} />
+            Konto löschen
           </button>
         </div>
       </div>

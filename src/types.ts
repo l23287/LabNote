@@ -2,7 +2,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  password: string;
+  passwordHash: string;
+  passwordSalt: string;
   avatar: string;
   teacherEmail?: string;
   schoolClass?: string;
@@ -33,7 +34,7 @@ export interface Protocol {
   userId: string;
   question: string;
   materials: string[];
-  procedure: string[];
+  procedure: string;
   hypothesis: string;
   observation: string;
   result: string;
@@ -51,7 +52,7 @@ export type ProtocolDraft = Omit<
 export const emptyDraft: ProtocolDraft = {
   question: "",
   materials: [],
-  procedure: [],
+  procedure: "",
   hypothesis: "",
   observation: "",
   result: "",

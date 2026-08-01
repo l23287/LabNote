@@ -28,7 +28,7 @@ export function BottomNav() {
         <div className="flex-1 flex justify-center">
           <NavLink
             to="/neu"
-            className="w-14 h-14 -mt-8 rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(163,230,53,0.4)]"
+            className="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(163,230,53,0.4)]"
             style={{
               background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-dark))",
             }}

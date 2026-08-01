@@ -16,19 +16,7 @@ export function ProtocolList() {
 
   const normalizedQuery = query.trim().toLowerCase();
   const filtered = normalizedQuery
-    ? protocols.filter((p) => {
-        const haystack = [
-          p.question,
-          ...p.materials,
-          ...p.procedure,
-          p.hypothesis,
-          p.observation,
-          p.result,
-        ]
-          .join(" ")
-          .toLowerCase();
-        return haystack.includes(normalizedQuery);
-      })
+    ? protocols.filter((p) => p.question.trim().toLowerCase().startsWith(normalizedQuery))
     : protocols;
 
   return (

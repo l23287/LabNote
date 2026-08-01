@@ -154,29 +154,6 @@ async function renderProtocolPdf(
     y += 12;
   }
 
-  function numberedList(items: string[]) {
-    const indent = 20;
-    items.forEach((raw, i) => {
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
-      const wrapped: string[] = doc.splitTextToSize(raw, maxWidth - indent);
-      ensureSpace(16);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(...ACCENT);
-      doc.text(`${i + 1}.`, MARGIN_X, y);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(...BODY_TEXT);
-      doc.text(wrapped[0], MARGIN_X + indent, y);
-      y += 16;
-      for (const line of wrapped.slice(1)) {
-        ensureSpace(16);
-        doc.text(line, MARGIN_X + indent, y);
-        y += 16;
-      }
-    });
-    y += 12;
-  }
-
   async function images(imgs: string[]) {
     if (imgs.length === 0) return;
     ensureSpace(IMG_BOX);
@@ -214,7 +191,7 @@ async function renderProtocolPdf(
   await images(protocol.images.materials);
 
   sectionHeading("Durchführung");
-  numberedList(protocol.procedure);
+  paragraph(protocol.procedure);
   await images(protocol.images.procedure);
 
   if (protocol.hypothesis || protocol.images.hypothesis.length > 0) {

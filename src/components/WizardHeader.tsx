@@ -15,6 +15,7 @@ export function WizardHeader({ step, total, onBack, title }: WizardHeaderProps) 
     <div className="px-6 pt-6">
       <div className="flex items-center justify-between mb-5">
         <button
+          type="button"
           onClick={onBack ?? (() => navigate(-1))}
           className="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-ink"
           aria-label="Zurück"

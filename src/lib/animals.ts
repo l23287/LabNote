@@ -18,6 +18,12 @@ export const ANIMALS: Animal[] = [
   { id: "cat", emoji: "🐱", label: "Katze", bg: "#8fb3d9" },
   { id: "owl", emoji: "🦉", label: "Eule", bg: "#a988c9" },
   { id: "penguin", emoji: "🐧", label: "Pinguin", bg: "#5fb8b0" },
+  { id: "elephant", emoji: "🐘", label: "Elefant", bg: "#a3aab8" },
+  { id: "turtle", emoji: "🐢", label: "Schildkröte", bg: "#4f9e7a" },
+  { id: "dog", emoji: "🐶", label: "Hund", bg: "#d9a35f" },
+  { id: "cow", emoji: "🐮", label: "Kuh", bg: "#e8c9a0" },
+  { id: "unicorn", emoji: "🦄", label: "Einhorn", bg: "#d9a8e0" },
+  { id: "hedgehog", emoji: "🦔", label: "Igel", bg: "#a67c52" },
 ];
 
 export function getAnimal(id: string | undefined): Animal {

@@ -95,10 +95,21 @@ export function ProtocolDetail() {
       const updated = { ...protocol, submittedAt: new Date().toISOString() };
       upsertProtocol(updated);
       setProtocol(updated);
+
+      if (result === "downloaded" && user.teacherEmail) {
+        const subject = encodeURIComponent(`Protokoll: ${protocol.question || "Experiment"}`);
+        const body = encodeURIComponent(
+          `Hallo,\n\nanbei mein Experimentprotokoll. Das PDF wurde gerade heruntergeladen – bitte diese E-Mail damit ergänzen (Anhang hinzufügen).\n\nViele Grüße\n${user.name}`,
+        );
+        window.location.href = `mailto:${user.teacherEmail}?subject=${subject}&body=${body}`;
+      }
+
       setFeedback(
         result === "shared"
           ? "Protokoll geteilt."
-          : "PDF heruntergeladen – jetzt an deine Lehrkraft senden.",
+          : user.teacherEmail
+            ? "PDF heruntergeladen. Eine E-Mail an deine Lehrkraft wird geöffnet – bitte das PDF dort manuell anhängen."
+            : "PDF heruntergeladen. Sende es selbst an deine Lehrkraft, oder hinterlege ihre E-Mail-Adresse im Profil, damit wir das nächste Mal die E-Mail für dich vorbereiten.",
       );
     } catch {
       setFeedback("Das PDF konnte nicht erstellt werden.");
@@ -124,7 +135,8 @@ export function ProtocolDetail() {
     <div className="min-h-dvh px-6 pt-6 pb-32">
       <div className="flex items-center justify-between mb-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/home")}
+          aria-label="Zur Übersicht"
           className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center"
         >
           <ChevronLeft size={20} />
@@ -184,16 +196,7 @@ export function ProtocolDetail() {
         </Section>
 
         <Section icon={<FlaskConical size={16} />} title="Durchführung">
-          <ol className="space-y-2">
-            {protocol.procedure.map((s, i) => (
-              <li key={i} className="text-sm flex gap-3">
-                <span className="w-5 h-5 rounded-full bg-bg-soft text-[11px] flex items-center justify-center text-muted font-semibold shrink-0 mt-0.5">
-                  {i + 1}
-                </span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ol>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">{protocol.procedure}</p>
           <ImageGallery images={protocol.images.procedure} />
         </Section>
 
@@ -227,7 +230,7 @@ export function ProtocolDetail() {
           }}
         >
           {submitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-          {protocol.submittedAt ? "Erneut als PDF einreichen" : "Als PDF einreichen"}
+          {protocol.submittedAt ? "PDF erneut erstellen & senden" : "PDF erstellen & senden"}
         </button>
 
         <button
